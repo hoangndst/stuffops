@@ -1,0 +1,36 @@
+version: "3.9"
+networks:
+  traefik_default:
+    external: true
+services:
+  coder:
+    # This MUST be stable for our documentation and
+    # other automations.
+    image: ghcr.io/coder/coder:${CODER_VERSION:-latest}
+    # ports:
+      # - "7080:7080"
+    environment:
+      CODER_PG_CONNECTION_URL: "postgresql://hoangndst:Postgres2002*@postgres/coder?sslmode=disable"
+      CODER_ADDRESS: "0.0.0.0:7080"
+      # You'll need to set CODER_ACCESS_URL to an IP or domain
+      # that workspaces can reach. This cannot be localhost
+      # or 127.0.0.1 for non-Docker templates!
+      CODER_ACCESS_URL: "https://code.hoangndst.freeddns.org"
+      CODER_WILDCARD_ACCESS_URL: "*.code.hoangndst.freeddns.org"
+    # If the coder user does not have write permissions on
+    # the docker socket, you can uncomment the following
+    # lines and set the group ID to one that has write
+    # permissions on the docker socket.
+    group_add:
+      - "999" # docker group on host
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.coder.entrypoints=websecure"
+      - "traefik.http.routers.coder.rule=Host(`code.hoangndst.freeddns.org`)"
+      - "traefik.http.routers.coder.service=coder"
+      - "traefik.http.services.coder.loadbalancer.server.port=7080"
+      - "traefik.docker.network=traefik_default"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - traefik_default

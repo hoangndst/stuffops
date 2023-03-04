@@ -1,0 +1,18 @@
+version: '3.6'
+volumes:
+  runner_config:
+    driver: local
+networks:
+  traefik_default:
+    external: true
+services:
+  runner:
+    image: 'gitlab/gitlab-runner:latest'
+    restart: always
+    # ports:
+    #   - '8093:8093'
+    volumes:
+      - '/var/run/docker.sock:/var/run/docker.sock'
+      - 'runner_config:/etc/gitlab-runner'
+    networks:
+      - traefik_default

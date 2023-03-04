@@ -1,0 +1,42 @@
+version: '3'
+
+volumes:
+  data:
+    driver: local
+networks:
+  traefik_default:
+    external: true
+services:
+  reverse-proxy:
+    # The official v2 Traefik docker image
+    image: traefik:v2.9
+    restart: unless-stopped
+    # Enables the web UI and tells Traefik to listen to docker
+    command: --api.insecure=true --providers.docker
+    ports:
+      # The HTTP port
+      - "80:80"
+      # The Web UI (enabled by --api.insecure=true)
+      - "8080:8080"
+      - "443:443"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=traefik_default"
+      - "traefik.http.routers.traefik.entrypoints=web,websecure"
+      - "traefik.http.routers.traefik.rule=Host(`traefik.hoangndst.freeddns.org`)"
+      - "traefik.http.routers.traefik.service=traefik"
+      - "traefik.http.services.traefik.loadbalancer.server.port=8080"
+      - "traefik.http.routers.traefik.tls=true"
+      - "traefik.http.routers.traefik.tls.certresolver=production"
+      - "traefik.http.routers.traefik.tls.domains[0].main=hoangndst.freeddns.org"
+      - "traefik.http.routers.traefik.tls.domains[0].sans=*.hoangndst.freeddns.org"
+    environment:
+      - "DYNU_API_KEY=7VdZb643665567cZ54TT5bTZ65XUac6d"
+    volumes:
+      # So that Traefik can listen to the Docker events
+      - /etc/localtime:/etc/localtime:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - data:/etc/traefik
+      - /etc/traefik/traefik.yml:/etc/traefik/traefik.yml
+    networks:
+      - traefik_defaul

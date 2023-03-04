@@ -1,0 +1,31 @@
+version: '3'
+
+volumes:
+  portainer_data:
+    external: true
+networks:
+  traefik_default:
+    external: true
+services:
+  app:
+    container_name: portainer
+    image: 'portainer/portainer-ce:latest'
+    ports:
+      - '3000:9000'
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.portainer.entrypoints=websecure"
+      - "traefik.http.routers.portainer.rule=Host(`portainer.hoangndst.freeddns.org`)"
+      - "traefik.http.routers.portainer.service=portainer"
+      - "traefik.http.services.portainer.loadbalancer.server.port=9000"
+      - "traefik.docker.network=traefik_default"
+      - "traefik.http.routers.portainer.tls=true"
+      - "traefik.http.routers.portainer.tls.certresolver=production"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer_data:/data
+      - /etc/localtime:/etc/localtime:ro
+    networks:
+      - traefik_default
+# docker run -d -p 3000:9000 -p 3003:9443 --name portainer --restart=always -v /var/run/docker.sock:/var/run/docker.sock -v portainer_data:/data portainer/portainer-ce:latest

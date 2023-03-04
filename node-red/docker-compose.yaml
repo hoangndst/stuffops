@@ -1,0 +1,22 @@
+version: "3.7"
+
+services:
+  node-red:
+    image: nodered/node-red:latest
+    ports:
+      - "1880:1880"
+    networks:
+      - traefik_default
+    volumes:
+      - node-red-data:/data
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.node-red.entrypoints=websecure"
+      - "traefik.http.routers.node-red.rule=Host(`node-red.hoangndst.freeddns.org`)"
+      - "traefik.http.routers.node-red.service=node-red"
+      - "traefik.http.services.node-red.loadbalancer.server.port=1880"
+volumes:
+  node-red-data:
+networks:
+  traefik_default:
+    external: true
