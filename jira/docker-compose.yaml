@@ -1,0 +1,29 @@
+version: '3.7'
+services:
+  app:
+    image: 'atlassian/jira-software'
+    container_name: jira
+    restart: always
+    volumes:
+      - 'jira_data:/var/atlassian/application-data/jira'
+    environment:
+      - ATL_JDBC_URL=jdbc:postgresql://postgres:5432/jira
+      - ATL_JDBC_USER=jira
+      - ATL_JDBC_PASSWORD=jira
+      - ATL_DB_DRIVER=org.postgresql.Driver
+      - ATL_DB_TYPE=postgres
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.jira-software.entrypoints=websecure"
+      - "traefik.http.routers.jira-software.rule=Host(`jira-software.hoangndst.freeddns.org`)"
+      - "traefik.http.routers.jira-software.service=jira-software"
+      - "traefik.http.services.jira-software.loadbalancer.server.port=8080"
+      - "traefik.docker.network=traefik_default"
+    networks:
+      - traefik_default
+volumes:
+  jira_data:
+    external: true
+networks:
+  traefik_default:
+    external: true

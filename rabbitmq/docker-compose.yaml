@@ -1,0 +1,29 @@
+version: '3'
+networks:
+  traefik_default:
+    external: true
+  rabbitmq-prometheus:
+    external: true
+volumes:
+  rabbitmq_data:
+    external: true
+services:
+  app:
+    container_name: rabbitmq
+    image: 'rabbitmq:management'
+    restart: unless-stopped
+    environment:
+      - RABBITMQ_DEFAULT_USER=hoangndst
+      - RABBITMQ_DEFAULT_PASS=Hoang2002
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.rabbitmq.entrypoints=websecure"
+      - "traefik.http.routers.rabbitmq.rule=Host(`rabbitmq.hoangndst.freeddns.org`)"
+      - "traefik.http.routers.rabbitmq.service=rabbitmq"
+      - "traefik.http.services.rabbitmq.loadbalancer.server.port=15672"
+      - "traefik.docker.network=traefik_default"
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    networks:
+      - traefik_default
+      - rabbitmq-prometheus

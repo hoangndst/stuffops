@@ -1,73 +1,81 @@
-version: '3'
-
-volumes:
-  prometheus-data:
-    driver: local
-  grafana-data:
-    driver: local
+version: "3.6"
 networks:
+  rabbitmq-prometheus:
+    external: true
   traefik_default:
     external: true
+volumes:
+  rabbitmq-prometheus_prometheus:
+  rabbitmq-prometheus_grafana:
 services:
-  prometheus:
-    image: prom/prometheus:latest
-    container_name: prometheus
-    ports:
-      - "9090:9090"
-    volumes:
-      - /etc/prometheus:/etc/prometheus
-      - prometheus-data:/prometheus
-    networks:
-      - traefik_default
-    restart: unless-stopped
-    command:
-      - "--config.file=/etc/prometheus/prometheus.yml"
   grafana:
-    image: grafana/grafana-oss:latest
     container_name: grafana
+    image: grafana/grafana-oss:latest
+    # reverse proxy traefik
+    # ports:
+    #   - "3000:3000"
+    networks:
+      - "rabbitmq-prometheus"
+      - "traefik_default"
+    volumes:
+      - rabbitmq-prometheus_grafana:/var/lib/grafana
+      - /home/hoangndst/stuffops/monitoring/grafana/dashboards.yml:/etc/grafana/provisioning/dashboards/rabbitmq.yaml
+      - /home/hoangndst/stuffops/monitoring/grafana/datasources.yml:/etc/grafana/provisioning/datasources/prometheus.yaml
+      - /home/hoangndst/stuffops/monitoring/grafana/dashboards:/dashboards
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.monitor.entrypoints=websecure"
-      - "traefik.http.routers.monitor.rule=Host(`monitor.hoangndst.freeddns.org`)"
+      - "traefik.http.routers.monitor.rule=Host(`grafana.hoangndst.freeddns.org`)"
       - "traefik.http.routers.monitor.service=grafana"
       - "traefik.http.services.grafana.loadbalancer.server.port=3000"
       - "traefik.docker.network=traefik_default"
       - "traefik.http.routers.monitor.tls=true"
       - "traefik.http.routers.monitor.tls.certresolver=production"
-    volumes:
-      - grafana-data:/var/lib/grafana
+    environment:
+      # https://grafana.com/plugins/flant-statusmap-panel
+      # https://grafana.com/plugins/grafana-piechart-panel
+      # https://grafana.com/plugins/grafana-polystat-panel
+      # https://grafana.com/plugins/jdbranham-diagram-panel
+      # https://grafana.com/plugins/michaeldmoore-multistat-panel
+      # https://grafana.com/plugins/vonage-status-panel
+      # https://grafana.com/plugins/yesoreyeram-boomtable-panel
+      GF_INSTALL_PLUGINS: "flant-statusmap-panel,grafana-piechart-panel"
+  prometheus:
+    # https://hub.docker.com/r/prom/prometheus/tags
+    image: prom/prometheus:lastest
     networks:
-      - traefik_default
-    restart: unless-stopped
-
-  node_exporter:
-    image: quay.io/prometheus/node-exporter:latest
-    container_name: node_exporter
+      - "rabbitmq-prometheus"
+    ports:
+      - "9090:9090"
+    volumes:
+      - rabbitmq-prometheus_prometheus:/prometheus
+      - /home/hoangndst/stuffops/monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+  node-exporter:
     command:
-      - '--path.rootfs=/host'
-    # network_mode: host
-    pid: host
-    restart: unless-stopped
-    volumes:
-      - '/:/host:ro,rslave'
+      - '--path.procfs=/host/proc'
+      - '--path.rootfs=/rootfs'
+      - '--path.sysfs=/host/sys'
+      - '--collector.filesystem.ignored-mount-points=^/(sys|proc|dev|host|etc)($$|/)'
+    expose:
+      - 9100
+    # https://hub.docker.com/r/prom/node-exporter/tags
+    image: prom/node-exporter:v1.2.0
     networks:
-      - traefik_default
+      - "rabbitmq-prometheus"
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
   cadvisor:
-    # TODO: latest tag is not updated, check latest release https://github.com/google/cadvisor/releases
-    image: gcr.io/cadvisor/cadvisor:v0.46.0
-    container_name: cadvisor
-    # ports:
-    #   - "8080:8080"
-    # network_mode: host
+    expose:
+      - 8080
+    # https://hub.docker.com/r/google/cadvisor/tags
+    image: gcr.io/cadvisor/cadvisor:v0.47.0
+    networks:
+      - "rabbitmq-prometheus"
     volumes:
       - /:/rootfs:ro
-      - /var/run:/var/run:ro
+      - /var/run:/var/run:rw
       - /sys:/sys:ro
-      - /media/sd500/docker/:/var/lib/docker:ro
-      - /dev/disk/:/dev/disk:ro
-    networks:
-      - traefik_default
-    devices:
-      - /dev/kmsg
-    restart: unless-stopped
-    privileged: true
+      - /var/lib/docker/:/var/lib/docker:ro
+      #- /cgroup:/cgroup:ro #doesn't work on MacOS only for Linux
