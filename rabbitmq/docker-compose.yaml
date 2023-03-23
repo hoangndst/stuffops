@@ -1,4 +1,4 @@
-version: '3'
+version: '3.6'
 networks:
   traefik_default:
     external: true
@@ -10,6 +10,7 @@ volumes:
 services:
   app:
     container_name: rabbitmq
+    hostname: rabbitmq
     image: 'rabbitmq:management'
     restart: unless-stopped
     environment:
@@ -22,8 +23,12 @@ services:
       - "traefik.http.routers.rabbitmq.service=rabbitmq"
       - "traefik.http.services.rabbitmq.loadbalancer.server.port=15672"
       - "traefik.docker.network=traefik_default"
+    cap_add:
+      - ALL
     volumes:
       - rabbitmq_data:/var/lib/rabbitmq
+      - /home/hoangndst/stuffops/rabbitmq/monitoring-rabbitmq/rabbitmq-overview.conf:/etc/rabbitmq/rabbitmq.conf:ro
+      - /home/hoangndst/stuffops/rabbitmq/monitoring-rabbitmq/rabbitmq-overview-definitions.json:/etc/rabbitmq/rabbitmq-definitions.json:ro
     networks:
       - traefik_default
       - rabbitmq-prometheus

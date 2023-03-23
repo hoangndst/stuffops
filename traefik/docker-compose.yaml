@@ -39,4 +39,4 @@ services:
       - data:/etc/traefik
       - /etc/traefik/traefik.yml:/etc/traefik/traefik.yml
     networks:
-      - traefik_defaul
+      - traefik_default
