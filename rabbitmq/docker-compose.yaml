@@ -16,6 +16,7 @@ services:
     environment:
       - RABBITMQ_DEFAULT_USER=hoangndst
       - RABBITMQ_DEFAULT_PASS=Hoang2002
+      - RABBITMQ_ERLANG_COOKIE=rabbitmq-prometheus
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.rabbitmq.entrypoints=websecure"
