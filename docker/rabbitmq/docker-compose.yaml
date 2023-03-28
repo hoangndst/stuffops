@@ -1,4 +1,6 @@
 version: '3.6'
+# The version of the compose file. This is optional, but recommended. More info: https://docs.docker.com/compose/compose-file/#compose-and-docker-compatibility-matrix
+# The version of the compose file. This is optional, but recommended. More info: https://docs.docker.com/compose/compose-file/#compose-and-docker-compatibility-matrix
 networks:
   traefik_default:
     external: true
@@ -21,6 +23,7 @@ services:
       - "traefik.enable=true"
       - "traefik.http.routers.rabbitmq.entrypoints=websecure"
       - "traefik.http.routers.rabbitmq.rule=Host(`rabbitmq.hoangndst.freeddns.org`)"
+      - "traefik.http.routers.rabbitmq.tls=true"
       - "traefik.http.routers.rabbitmq.service=rabbitmq"
       - "traefik.http.services.rabbitmq.loadbalancer.server.port=15672"
       - "traefik.docker.network=traefik_default"
