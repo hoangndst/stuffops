@@ -1,0 +1,10 @@
+- name: Node join
+  hosts: k8s
+  become: true
+  tasks:
+  - name: kubeadm join
+    shell: |
+      kubeadm join master.local:6443 --token zxlyyr.bws8bpvo60tbt3js \
+        --discovery-token-ca-cert-hash sha256:3a2a40e4adafe0fdcc19f6edfef8fb19d7275c15b8ea1c064b5291c462598143
+    tags:
+    - join

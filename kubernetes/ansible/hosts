@@ -1,0 +1,13 @@
+[k8s]
+master   ansible_host=34.69.63.40
+worker-0 ansible_host=34.30.231.129
+worker-1 ansible_host=34.27.97.180
+[k8s-local]
+worker-0-local ansible_host=10.128.0.16
+worker-1-local ansible_host=10.128.0.15
+[k8s:vars]
+ansible_ssh_private_key_file=/home/hoangndst/.ssh/ansible
+[k8s-local:vars]
+ansible_ssh_private_key_file=/home/hoangndst/.ssh/ansible
+[localhost] 
+localhost ansible_connection=local 

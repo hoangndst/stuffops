@@ -1,0 +1,74 @@
+# Installing containerd, runc and CNI plugins from official binaries on all node on Google Cloud
+- name: Install containerd, runc, and CNI plugins
+  hosts: k8s, localhost
+  become: true
+  tasks:
+  - name: apt update
+    apt:
+      upgrade: yes
+      update_cache: yes
+    tags:
+    - containerd
+  - name: Create Download Directory
+    file:
+      path: /tmp/download
+      state: directory
+      mode: 0755
+    tags:
+    - containerd
+
+  # Install containerd
+  - name: Download containerd
+    shell: curl -sL -o /tmp/download/containerd.tar.gz https://github.com/containerd/containerd/releases/download/v1.7.0/containerd-1.7.0-linux-amd64.tar.gz
+    tags:
+    - containerd
+  - name: tar Cxzvf /usr/local containerd-1.6.2-linux-amd64.tar.gz
+    shell: tar Cxzvf /usr/local /tmp/download/containerd.tar.gz
+    tags:
+    - containerd
+  - name: Create /usr/local/lib/systemd/system/ directory
+    file:
+      path: /usr/local/lib/systemd/system/
+      state: directory
+      mode: 0755
+    tags:
+    - containerd
+  - name: Download containerd.service to /usr/local/lib/systemd/system/ directory
+    get_url:
+      url: https://raw.githubusercontent.com/containerd/containerd/main/containerd.service
+      dest: /usr/local/lib/systemd/system/containerd.service
+    tags:
+    - containerd
+  - name: Enable containerd service
+    shell: |
+      systemctl daemon-reload
+      systemctl enable containerd
+    tags:
+    - containerd
+  
+  # Install runc
+  - name: Download runc
+    shell: curl -sL -o /tmp/download/runc.amd64 https://github.com/opencontainers/runc/releases/download/v1.1.4/runc.amd64
+    tags:
+    - runc
+  - name: install -m 755 runc.amd64 /usr/local/sbin/runc
+    shell: install -m 755 /tmp/download/runc.amd64 /usr/local/sbin/runc
+    tags:
+    - runc
+  
+  # Install CNI plugins
+  - name: Download CNI plugins
+    shell: curl -sL -o /tmp/download/cni-plugins-linux-amd64.tgz https://github.com/containernetworking/plugins/releases/download/v1.2.0/cni-plugins-linux-amd64-v1.2.0.tgz
+    tags:
+    - cni
+  - name: mkdir -p /opt/cni/bin
+    file:
+      path: /opt/cni/bin
+      state: directory
+      mode: 0755
+    tags:
+    - cni
+  - name: tar Cxzvf /opt/cni/bin cni-plugins-linux-amd64-v1.1.1.tgz
+    shell: tar Cxzvf /opt/cni/bin /tmp/download/cni-plugins-linux-amd64.tgz
+    tags:
+    - cni

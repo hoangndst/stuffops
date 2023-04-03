@@ -1,0 +1,15 @@
+# Add hosts to each vm
+- name: Add hosts to each vm
+  hosts: k8s
+  become: true
+  tasks:
+  - name: add host to the end of /etc/hosts
+    shell: |
+      echo "10.128.0.14     master.local" | sudo tee -a /etc/hosts
+      echo "10.128.0.16     worker-0.local" | sudo tee -a /etc/hosts
+      echo "10.128.0.15     worker-1.local" | sudo tee -a /etc/hosts
+      echo "34.69.63.40     master" | sudo tee -a /etc/hosts
+      echo "34.30.231.129   worker-0" | sudo tee -a /etc/hosts
+      echo "34.27.97.18     worker-1" | sudo tee -a /etc/hosts
+    tags:
+    - hosts

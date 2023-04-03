@@ -1,0 +1,39 @@
+# Installing kubeadm, kubelet and kubectl 
+- name: Installing kubeadm, kubelet and kubectl 
+  hosts: k8s
+  become: true
+  tasks:
+  - name: apt-get update
+    apt:
+      upgrade: yes
+      update_cache: yes
+    tags:
+    - kubeadm
+  - name: sudo apt-get install -y apt-transport-https ca-certificates curl
+    shell: sudo apt-get install -y apt-transport-https ca-certificates curl
+    tags:
+    - kubeadm
+  - name: mkdir /etc/apt/keyrings
+    file:
+      path: /etc/apt/keyrings
+      state: directory
+      mode: 0755
+    tags:
+    - kubeadm
+  - name: Download the Google Cloud public signing key
+    shell: curl -fsSLo /etc/apt/keyrings/kubernetes-archive-keyring.gpg https://packages.cloud.google.com/apt/doc/apt-key.gpg
+    tags:
+    - kubeadm
+  - name: Add the Kubernetes apt repository
+    shell: |
+      echo "deb [signed-by=/etc/apt/keyrings/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee /etc/apt/sources.list.d/kubernetes.list
+    tags:
+    - kubeadm
+  - name: Update apt package index, install kubelet, kubeadm and kubectl, and pin their version
+    shell: |
+      sudo apt-get update
+      sudo apt-get install -y kubelet kubeadm kubectl
+      sudo apt-mark hold kubelet kubeadm kubectl
+    tags:
+    - kubeadm
+  - name: kubeadm init --pod-network-cidr=192.168.0.0/16 --control-plane-endpoint=master.local:6443
