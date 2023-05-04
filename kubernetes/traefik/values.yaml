@@ -1,0 +1,138 @@
+# additionalArguments:
+# Configure your CertificateResolver here...
+# 
+# HTTP Challenge
+# ---
+# Generic Example:
+#   - --certificatesresolvers.generic.acme.email=your-email@example.com
+#   - --certificatesresolvers.generic.acme.caServer=https://acme-v02.api.letsencrypt.org/directory
+#   - --certificatesresolvers.generic.acme.httpChallenge.entryPoint=web
+#   - --certificatesresolvers.generic.acme.storage=/ssl-certs/acme-generic.json
+#
+# Prod / Staging Example:
+#   - --certificatesresolvers.staging.acme.email=your-email@example.com
+#   - --certificatesresolvers.staging.acme.caServer=https://acme-staging-v02.api.letsencrypt.org/directory
+#   - --certificatesresolvers.staging.acme.httpChallenge.entryPoint=web
+#   - --certificatesresolvers.staging.acme.storage=/ssl-certs/acme-staging.json
+#   - --certificatesresolvers.production.acme.email=your-email@example.com
+#   - --certificatesresolvers.production.acme.caServer=https://acme-v02.api.letsencrypt.org/directory
+#   - --certificatesresolvers.production.acme.httpChallenge.entryPoint=web
+#   - --certificatesresolvers.production.acme.storage=/ssl-certs/acme-production.json
+#
+# DNS Challenge
+# ---
+# Cloudflare Example:
+#  - --certificatesresolvers.cloudflare.acme.dnschallenge.provider=cloudflare
+#  - --certificatesresolvers.cloudflare.acme.email=your-email@example.com
+#  - --certificatesresolvers.cloudflare.acme.dnschallenge.resolvers=1.1.1.1
+#  - --certificatesresolvers.cloudflare.acme.storage=/ssl-certs/acme-cloudflare.json
+#
+# dynu (replace with your DNS provider):
+#  - --certificatesresolvers.dynu.acme.dnschallenge.provider=dynu
+#  - --certificatesresolvers.dynu.acme.email=hoangndst@gmail.com
+#  - --certificatesresolvers.dynu.acme.dnschallenge.resolvers=1.1.1.1
+#  - --certificatesresolvers.dynu.acme.storage=/ssl-certs/acme-dynu.json
+
+logs:
+# Configure log settings here...
+  general:
+    level: INFO
+    format: json
+
+
+metrics:
+  ## Prometheus is enabled by default.
+  ## It can be disabled by setting "prometheus: null"
+  prometheus:
+    ## Entry point used to expose metrics.
+    entryPoint: metrics
+    ## Enable metrics on entry points. Default=true
+    # addEntryPointsLabels: false
+    ## Enable metrics on routers. Default=false
+    # addRoutersLabels: true
+    ## Enable metrics on services. Default=true
+    # addServicesLabels: false
+    ## Buckets for latency metrics. Default="0.1,0.3,1.2,5.0"
+    # buckets: "0.5,1.0,2.5"
+    ## When manualRouting is true, it disables the default internal router in
+    ## order to allow creating a custom router for prometheus@internal service.
+    # manualRouting: true
+
+ports:
+# Configure your entrypoints here...
+  web:
+    address: :80
+    redirectTo: websecure
+  websecure:
+    address: :443
+    tls:
+      enabled: true
+      certResolver: production
+  metrics:
+    # When using hostNetwork, use another port to avoid conflict with node exporter:
+    # https://github.com/prometheus/prometheus/wiki/Default-port-allocations
+    port: 9100
+    # hostPort: 9100
+    # Defines whether the port is exposed if service.type is LoadBalancer or
+    # NodePort.
+    #
+    # You may not want to expose the metrics port on production deployments.
+    # If you want to access it from outside of your cluster,
+    # use `kubectl port-forward` or create a secure ingress
+    expose: false
+    # The exposed port for this service
+    exposedPort: 9100
+    # The port protocol (TCP/UDP)
+    protocol: TCP
+  
+certificatesResolvers:
+  production:
+    acme:
+      email: hoangndst@gmail.com
+      storage: /certs/acme.json
+      dnsChallenge:
+        provider: dynu
+        resolvers:
+          - "1.1.1.1:53"
+          - "8.8.8.8:53"
+
+env:
+  - name: DYNU_API_KEY
+    valueFrom:
+      secretKeyRef:
+        name: dynu-api-key
+        key: api-key
+
+# Disable Dashboard
+ingressRoute:
+  dashboard:
+    enabled: false
+
+# Persistent Storage
+persistence:
+  enabled: true
+  name: certs
+  accessMode: ReadWriteOnce
+  size: 1Gi
+  path: /certs
+  storageClass: "" 
+  annotations: {}
+
+deployment:
+  initContainers:
+    # The "volume-permissions" init container is required if you run into permission issues.
+    # Related issue: https://github.com/traefik/traefik-helm-chart/issues/396
+    - name: volume-permissions
+      image: busybox:latest
+      command: ["sh", "-c", "touch /certs/acme.json; chmod -Rv 600 /certs/*"]
+      securityContext:
+        runAsNonRoot: true
+        runAsGroup: 65532
+        runAsUser: 65532
+      volumeMounts:
+        - name: certs
+          mountPath: /certs
+
+ingressClass:
+  enabled: true
+  isDefaultClass: true

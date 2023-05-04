@@ -502,11 +502,11 @@ env:
 #     configMapRef:
 #       name: configmap-name
 #       key: config-key
-- name: DYNU_API_KEY
-  valueFrom:
-    secretKeyRef:
-      name: dynu-api-key
-      key: api-key
+  - name: DYNU_API_KEY
+    valueFrom:
+      secretKeyRef:
+        name: dynu-api-key
+        key: api-key
 #   valueFrom:
 #     secretKeyRef:
 #       name: secret-name
@@ -702,13 +702,13 @@ autoscaling:
 # It can be used to store TLS certificates, see `storage` in certResolvers
 persistence:
   enabled: false
-  name: data
+  name: certs
 #  existingClaim: ""
   accessMode: ReadWriteOnce
   size: 128Mi
   # storageClass: ""
   # volumeName: ""
-  path: /data
+  path: /certs
   annotations: {}
   # subPath: "" # only mount a subpath of the Volume into the pod
 
