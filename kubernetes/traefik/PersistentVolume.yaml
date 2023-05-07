@@ -1,14 +1,20 @@
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: traefik-pv
-  namespace: traefik
+  name: pv-1
 spec:
   capacity:
-    storage: 1Gi
+    storage: 10Gi
   accessModes:
     - ReadWriteOnce
-  persistentVolumeReclaimPolicy: Retain
-  storageClassName: standard
-  hostPath:
-    path: /certs
+  storageClassName: local-storage
+  local:
+    path: /k8s-data/volumes/pv-1
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: kubernetes.io/hostname
+              operator: In
+              values:
+                - worker1
