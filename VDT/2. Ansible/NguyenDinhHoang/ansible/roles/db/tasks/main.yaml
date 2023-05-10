@@ -1,0 +1,6 @@
+- name: Prepare to deploy database
+  import_tasks: setup.yaml
+  tags: database
+- name: Deploy database
+  import_tasks: deploy.yaml
+  tags: database

@@ -17,5 +17,6 @@ def create_app(config_class=Config):
 
     @app.route('/test')
     def test_page():
-        return 'Testing the Flask Application Factory Pattern'
+        # return 'Local IP:
+        return 'Testing the Flask Application Factory Pattern, ansible_host: {}'.format(app.config['ANSIBLE_HOST'])
     return app

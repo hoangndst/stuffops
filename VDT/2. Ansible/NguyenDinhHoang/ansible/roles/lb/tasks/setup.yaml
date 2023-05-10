@@ -33,7 +33,7 @@
   docker_volume:
     name: "{{ LB_VOLUME }}"
     driver: local
-    driver_opts:
+    driver_options:
       type: nfs
       o: addr={{ NFS_SERVER_IP }},rw
       device: ":{{ NFS_SHARE_PATH }}"
@@ -51,6 +51,15 @@
   template:
     src: traefik.yaml.j2
     dest: /etc/traefik/traefik.yaml
+    owner: root
+    group: root
+    mode: 0644
+  become: yes
+  tags: traefik
+- name: Copy traefik dynamic config file to "/etc/traefik"
+  template:
+    src: dynamic.yaml.j2
+    dest: /etc/traefik/dynamic.yaml
     owner: root
     group: root
     mode: 0644
