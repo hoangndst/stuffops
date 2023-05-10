@@ -39,11 +39,13 @@ class Intern:
         return db.find_one({'_id': id})
     
     def update(self, id):
+        unicode_name = unidecode(self.name)
+        email = unicode_name.split(' ')[-1].lower() + unicode_name.split(' ')[0][0].lower() + unicode_name.split(' ')[1][0].lower() + '@' + 'is.viettel.com.vn'
         db.update_one({'_id': id}, {'$set': {
             'name': self.name,
             'university': self.university,
             'year_of_birth': self.year_of_birth,
-            'email': self.name.split(' ')[-1].lower() + self.name.split(' ')[0][0].lower() + self.name.split(' ')[1][0].lower() + '@' + 'is.viettel.com.vn'
+            'email': email
         }})
     
     @classmethod
