@@ -29,14 +29,11 @@
   register: docker_db_volume
   become: yes
   tags: docker
-- name: Create docker nfs MONGO_DB_VOLUME
+- name: Create docker MONGO_DB_VOLUME
   docker_volume:
     name: "{{ MONGO_DB_VOLUME }}"
+    state: present
     driver: local
-    driver_options:
-      type: nfs
-      o: addr={{ NFS_SERVER_IP }},rw
-      device: ":{{ NFS_SHARE_PATH }}"
   when: docker_db_volume.exists == false
   become: yes
   tags: docker

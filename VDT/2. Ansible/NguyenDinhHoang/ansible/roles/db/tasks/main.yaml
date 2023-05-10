@@ -4,3 +4,6 @@
 - name: Deploy database
   import_tasks: deploy.yaml
   tags: database
+- name: Init Replica Set
+  import_tasks: init.yaml
+  tags: database

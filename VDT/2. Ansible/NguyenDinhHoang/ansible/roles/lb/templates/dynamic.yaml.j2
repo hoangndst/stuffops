@@ -17,12 +17,18 @@ http:
   services:
     vdt-frontend:
       loadBalancer:
+        healthCheck:
+          path: /
+          port: 3000
         servers:
           - url: http://{{ VM1_IP }}:3000
           - url: http://{{ VM2_IP }}:3000
           - url: http://{{ VM3_IP }}:3000
     vdt-backend:
       loadBalancer:
+        healthCheck:
+          path: /test
+          port: 5000
         servers:
           - url: http://{{ VM1_IP }}:5000
           - url: http://{{ VM2_IP }}:5000
