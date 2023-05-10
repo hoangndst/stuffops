@@ -1,4 +1,4 @@
 - hosts: vm
   gather_facts: no
   roles:
-    - db
+    - test

@@ -11,7 +11,7 @@
       MONGO_PORT: "{{ MONGO_PORT }}"
       MONGO_USERNAME: "{{ MONGO_USERNAME }}"
       MONGO_PASSWORD: "{{ MONGO_PASSWORD }}"
-      ANSIBLE_HOST: "{{ ansible_host }}"
+      ANSIBLE_HOST: "{{ inventory_hostname }}"
     ports:
       - "5000:5000"
   become: yes

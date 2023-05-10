@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, jsonify
 from flask_cors import CORS
 from app.init_database import init_db
 
@@ -17,6 +17,10 @@ def create_app(config_class=Config):
 
     @app.route('/test')
     def test_page():
-        # return 'Local IP:
-        return 'Testing the Flask Application Factory Pattern, ansible_host: {}'.format(app.config['ANSIBLE_HOST'])
+        # return 'Ansible host: ' + app.config['ANSIBLE_HOST']
+        return 'Hello world'
+    @app.route('/identity')
+    def identity():
+        # return ansible host
+        return jsonify({'identity': app.config['ANSIBLE_HOST']})
     return app
