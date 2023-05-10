@@ -1,14 +1,19 @@
 # model student connect to database mongodb
 from app.models import collection as db
+from unidecode import unidecode
 
 class Intern:
     def __init__(self, name, university, year_of_birth):
         self.name = name
         self.university = university
         self.year_of_birth = year_of_birth
-        self.email = name.split(' ')[-1].lower() + name.split(' ')[0][0].lower() + name.split(' ')[1][0].lower() + '@' + 'is.viettel.com.vn'
+        unicode_name = unidecode(self.name) 
+        self.email = unicode_name.split(' ')[-1].lower() + unicode_name.split(' ')[0][0].lower() + unicode_name.split(' ')[1][0].lower() + '@' + 'is.viettel.com.vn'
     
     def save(self):
+        # Check if intern already exists
+        if db.find_one({'name': self.name, 'university': self.university, 'year_of_birth': self.year_of_birth}):
+            return False
         db.insert_one({
             'name': self.name,
             'university': self.university,
