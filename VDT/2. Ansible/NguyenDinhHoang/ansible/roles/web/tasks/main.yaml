@@ -1,0 +1,6 @@
+- name: Prepare for deployment
+  import_tasks: setup.yaml
+- name: Deploy frontend
+  import_tasks: deploy.yaml
+
+  
