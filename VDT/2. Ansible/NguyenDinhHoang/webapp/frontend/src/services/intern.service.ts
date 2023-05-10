@@ -21,11 +21,17 @@ const UpdateIntern = async (intern: any) => {
   return response.data
 }
 
+const GetIdentity = async () => {
+  const response = await server.get(`/identity`)
+  return response.data
+}
+
 const InternService = {
   GetIntern,
   AddIntern,
   DeleteIntern,
-  UpdateIntern
+  UpdateIntern,
+  GetIdentity
 }
 
 export default InternService

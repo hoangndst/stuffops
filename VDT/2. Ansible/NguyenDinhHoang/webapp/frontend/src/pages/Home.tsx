@@ -3,10 +3,21 @@ import Box from '@mui/material/Box'
 import Grid from '@mui/material/Grid'
 import { Typography } from '@mui/material'
 import { format } from 'date-fns'
+import InternService from 'src/services/intern.service'
 
 const Home = () => {
 
   const date = new Date()
+  const [indentity, setIndentity] = React.useState<any>("")
+
+  React.useEffect(() => {
+    InternService.GetIdentity()
+      .then((res) => {
+        setIndentity(res.identity)
+      }).catch((err) => {
+        console.log(err)
+      })
+  }, [])
 
   return (
     <Box sx={{ flexGrow: 1, mt: 5 }}>
@@ -20,7 +31,7 @@ const Home = () => {
           <Typography
             sx={{ textAlign: 'center', fontSize: '2.8rem', fontWeight: 'bold' }}
           >
-            Welcome back!
+            Welcome back! Running on {indentity}!
           </Typography>
         </Grid>
       </Grid>
