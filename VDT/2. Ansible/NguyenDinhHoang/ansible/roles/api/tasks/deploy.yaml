@@ -16,3 +16,9 @@
       - "5000:5000"
   become: yes
   tags: docker
+
+export MONGO_HOST=127.0.0.1
+export MONGO_PORT=27017
+export MONGO_USERNAME=hoangndst
+export MONGO_PASSWORD=Hoang2002
+export ANSIBLE_HOST=127.0.0.1
