@@ -2,10 +2,11 @@ from config import Config
 from pymongo import MongoClient
 
 client = MongoClient(
-    host=Config.MONGO_HOST,
+    host=[Config.MONGO_HOST1, Config.MONGO_HOST2, Config.MONGO_HOST3],
+    replicaset=Config.MONGO_REPLICASET,
     port=Config.MONGO_PORT,
     username=Config.MONGO_USERNAME,
-    password=Config.MONGO_PASSWORD
+    password=Config.MONGO_PASSWORD,
 )
 # check connection
 print(client.server_info())
