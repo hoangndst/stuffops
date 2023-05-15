@@ -358,3 +358,5 @@ We will use 10GB disk to create NFS server for sharing data between containers. 
   <div align="center">
     <img src="./assets/backend_lb_demo.gif" width="1000" />
   </div>
+
+7. Deploy Monitoring

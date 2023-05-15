@@ -1,3 +1,7 @@
+- name: Remove previous load balancer
+  shell: docker rm -f loadbalancer
+  become: yes
+  tags: traefik
 - name: Deploy load balancer
   docker_container:
     name: loadbalancer
@@ -7,7 +11,6 @@
     ports:
       - "80:80"
       - "443:443"
-      - "8080:8080"
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - /var/run/docker.sock:/var/run/docker.sock
