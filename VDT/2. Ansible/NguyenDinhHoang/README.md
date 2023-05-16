@@ -381,3 +381,53 @@ We will use 10GB disk to create NFS server for sharing data between containers. 
     - Like usual, using Load Balancer to balance traffic to multiple Prometheus servers is not a good idea because Prometheus server stores data in local storage. If we use Load Balancer, we will have to use sticky session to make sure that all requests from a client will be sent to the same Prometheus server. This will make the load balancing not effective. 
     - Thanos solves this problem. Thanos provides a global query view, high availability, data backup with historical, cheap data access as its core features in a single binary.
     - Thanos can query data from multiple Prometheus servers, clusters and store data in cloud storage. This makes it easy to scale Prometheus server and make it highly available. Data is dedublicated and compressed before storing in cloud storage. This makes it cheap to store data in cloud storage. 
+    - You can easily scale Thanos by adding more Sidecar, Store Gateway, Compactor, Querier/Query.
+    - You can easily backup data by using Compactor to compact, downsample and apply retention on the data stored in the cloud storage bucket.
+    - You can easily query data from multiple Prometheus servers, clusters by using Querier/Query.
+#### 3. Deploy Monitoring
+- Default variables:
+  - [**`main.yaml`**](./ansible/roles/monitor/defaults/main.yaml): Default variables for motoring
+    - `VDT_MONITOR_NET`: Monitoring network
+    - `PROMETHEUS_VOLUME`: Prometheus data volume
+    - `MINIO_ACCESS_KEY`: Minio access key
+    - `MINIO_SECRET_KEY`: Minio secret key
+    - `MINIO_VOLUME`: Minio data volume
+    - `GRAFANA_VOLUME`: Grafana data volume
+- Files:
+  - [**`Alert Manager configuration`**](./ansible/roles/monitor/files/alertmanager/config.yaml): Alert Manager configuration file
+  - [**`Grafana configuration`**](./ansible/roles/monitor/files/grafana): Include Grafana data source, dashboard configuration and dashboard json files.
+  - [**`Prometheus Rules`**](./ansible/roles/monitor/files/rules): All prometheus rules files
+- Templates:
+  - [**`prometheus.yaml.j2`**](./ansible/roles/monitor/templates/prometheus.yaml.j2): Prometheus configuration file
+  - [**`storage.yaml.j2`**](./ansible/roles/monitor/templates/storage.yaml.j2): Thanos storage configuration file
+  - [**`docker-compose.yaml.j2`**](./ansible/roles/monitor/templates/docker-compose.yaml.j2): Monitoring docker-compose file
+- Tasks:
+  - [**`setup.yaml`**](./ansible/roles/monitor/tasks/setup.yaml): Setup required docker models for ansible, create docker network if not exists. Copy monitoring configuration files to NFS share folder. This is preparation step for clustering monitoring.
+  - [**`deploy.yaml`**](./ansible/roles/monitor/tasks/deploy.yaml): Deploy monitoring
+  - [**`main.yaml`**](./ansible/roles/monitor/tasks/main.yaml): Include all tasks
+- Ansible:
+  ```bash
+  ansible-playbook -i inventories/digitalocean/hosts deploy.yaml -K
+  ```
+  Type your sudo password when prompted
+
+#### 4. Result
+- **`Grafana`**: [**`https://grafana.hoangnd.freeddns.org`**](https://grafana.hoangnd.freeddns.org/)
+  - Username: `admin`
+  - Password: `Hoang1999`
+  <div align="center">
+    <img src="./assets/grafana_cadvisor.png" width="1000" />
+    <img src="./assets/grafana_node_exporter.png" width="1000" />
+  </div>
+- **`Thanos - Prometheus`**: [**`https://thanos.hoangnd.freeddns.org`**](https://thanos.hoangnd.freeddns.org/)
+  <div align="center">
+    <img src="./assets/thanos_prometheus.png" width="1000" />
+    <img src="./assets/thanos_alert.png" width="1000" />
+  </div>
+- **`Alert Manager - Slack`**: [**`https://alertmanager.hoangnd.freeddns.org`**](https://alertmanager.hoangnd.freeddns.org/)
+  <div align="center">
+    <img src="./assets/alertmanager.png" width="1000" />
+    <img src="./assets/alertmanager_slack.png" width="1000" />
+  </div>
+
+### Deploy Logging

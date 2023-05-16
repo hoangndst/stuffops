@@ -6,6 +6,10 @@
     networks:
       - name: "{{ NETWORK_NAME }}"
     hostname: frontend
+    log_driver: fluentd
+    log_options:
+      fluentd-address: "fluentd:24224"
+      tag: frontend-{{ inventory_hostname }}
     ports:
       - "3000:80"
   become: yes
