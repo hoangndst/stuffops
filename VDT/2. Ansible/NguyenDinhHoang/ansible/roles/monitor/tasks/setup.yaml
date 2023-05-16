@@ -74,12 +74,12 @@
 #     - docker_minio_volume.exists == false
 #   become: yes
 #   tags: docker
-# - name: Copy folder files/alertmanager to /etc/
-#   copy:
-#     src: files/alertmanager
-#     dest: /etc/
-#   become: yes
-#   tags: alertmanager
+- name: Copy folder files/alertmanager to /etc/
+  copy:
+    src: files/alertmanager
+    dest: /etc/
+  become: yes
+  tags: alertmanager
 # - name: Create /etc/prometheus directory if not exists
 #   file:
 #     path: /etc/prometheus

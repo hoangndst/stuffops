@@ -359,4 +359,25 @@ We will use 10GB disk to create NFS server for sharing data between containers. 
     <img src="./assets/backend_lb_demo.gif" width="1000" />
   </div>
 
-7. Deploy Monitoring
+### Deploy Monitoring
+#### 1. Monitoring Architecture:
+  <div align="center">
+    <img src="./assets/monitoring_architecture.png" width="1000" />
+  </div>
+
+#### 2. Technologies used:
+  - [**`Prometheus`**](https://prometheus.io/): Collect metrics from targets by scraping metrics HTTP endpoints on these targets.
+  - [**`Alertmanager`**](https://prometheus.io/docs/alerting/latest/alertmanager/): Handle alerts sent by Prometheus server and send notifications to receivers.
+  - [**`Grafana`**](https://grafana.com/): Visualize metrics from Prometheus server.
+  - [**`Minio`**](https://min.io/): Object storage for Prometheus server.
+  - [**`Thanos`**](https://thanos.io/): Thanos provides a global query view, high availability, data backup with historical, cheap data access as its core features in a single binary. 
+  Those features can be deployed independently of each other. This allows you to have a subset of Thanos features ready for immediate benefit or testing, while also making it flexible for gradual roll outs in more complex environments.
+    - Sidecar: connects to Prometheus, reads its data for query and/or uploads it to cloud storage.
+    - Store Gateway: serves metrics inside of a cloud storage bucket.
+    - Compactor: compacts, downsamples and applies retention on the data stored in the cloud storage bucket.
+    - Querier/Query: implements Prometheus’s v1 API to aggregate data from the underlying components.
+
+  - Why I use **`Thanos`** for High Availability Prometheus + Alertmanager:
+    - Like usual, using Load Balancer to balance traffic to multiple Prometheus servers is not a good idea because Prometheus server stores data in local storage. If we use Load Balancer, we will have to use sticky session to make sure that all requests from a client will be sent to the same Prometheus server. This will make the load balancing not effective. 
+    - Thanos solves this problem. Thanos provides a global query view, high availability, data backup with historical, cheap data access as its core features in a single binary.
+    - Thanos can query data from multiple Prometheus servers, clusters and store data in cloud storage. This makes it easy to scale Prometheus server and make it highly available. Data is dedublicated and compressed before storing in cloud storage. This makes it cheap to store data in cloud storage. 

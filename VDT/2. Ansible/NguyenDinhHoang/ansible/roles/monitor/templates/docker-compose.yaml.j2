@@ -133,9 +133,9 @@ services:
       - '--config.file=/etc/alertmanager/config.yaml'
       - "--cluster.listen-address=0.0.0.0:9094"
 {% if inventory_hostname == 'vm2' %}
-      - "--cluster.advertise-address={{ VM3_IP }}:9094"
+      - "--cluster.peer={{ VM3_IP }}:9094"
 {% elif inventory_hostname == 'vm3' %}
-      - "--cluster.advertise-address={{ VM2_IP }}:9094"
+      - "--cluster.peer={{ VM2_IP }}:9094"
 {% endif %}
     networks:
       - "vdt_monitoring"
