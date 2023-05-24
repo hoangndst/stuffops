@@ -1,0 +1,24 @@
+global:
+  resolve_timeout: 1m
+
+templates:
+- '/etc/alertmanager/templates/*.tmpl'
+
+route:
+  receiver: 'gmail'
+
+receivers:
+- name: 'gmail'
+  email_configs:
+  - to: 'hoangndst@gmail.com'
+    from: 'hoangndst@gmail.com'
+    smarthost: 'smtp.gmail.com:587'
+    auth_username: 'hoangndst@gmail.com'
+    auth_identity: 'hoangndst@gmail.com'
+    auth_password: '<no_:D>
+    send_resolved: true
+    headers:
+      Subject: '[AlertManager] Cảnh báo mới'
+      From: 'AlertManager <alertmanager@example.com>'
+      To: 'Người nhận hoangndst@gmail.com'
+    html: '{{ template "email.viettel.html" . }}'
