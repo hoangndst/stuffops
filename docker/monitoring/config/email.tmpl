@@ -1,0 +1,111 @@
+{{ define "email.viettel.subject" }}Alert on {{ range.Alerts.Firing
+}}{{ .Labels.instance }} {{ end }}{{ end }}
+{{ define "email.viettel.html" }}
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>[AlertManager] Cảnh báo: {{ .GroupLabels.alertname }}</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        font-size: 14px;
+        line-height: 1.6;
+      }
+
+      h1,
+      h2,
+      h3 {
+        margin: 0;
+        padding: 0;
+      }
+
+      .container {
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #f7f7f7;
+        border: 1px solid #e5e5e5;
+      }
+
+      .header {
+        background-color: #fdfdff00;
+        color: #000000;
+        padding: 20px;
+        text-align: center;
+      }
+
+      .logo {
+        width: 200px;
+        margin: 0 auto;
+      }
+
+      .alert {
+        padding: 20px;
+        border-radius: 5px;
+        margin-bottom: 20px;
+      }
+
+      .critical {
+        background-color: #dc3545;
+        color: #ffffff;
+      }
+
+      .warning {
+        background-color: #ffc107;
+        color: #212529;
+      }
+
+      .info {
+        background-color: #17a2b8;
+        color: #ffffff;
+      }
+
+      .footer {
+        margin-top: 20px;
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>[AlertManager] Cảnh báo mới</h1>
+        <h2><strong>Số lượng cảnh báo: </strong>{{ .Alerts | len }}</h2>
+      </div>
+      <h3>Xin chào,</h3>
+      <p>
+        Chúng tôi xin thông báo rằng đã xảy ra một cảnh báo mới trong hệ thống.
+        Dưới đây là thông tin chi tiết:
+      </p>
+      {{ range.Alerts }}
+      <div class="alert {{ .Labels.severity }}">
+        <h2>{{ .Labels.alertname }}</h2>
+        <p><strong>Mức độ: </strong>{{ .Labels.severity }}</p>
+        <p><strong>Tên máy chủ: </strong>{{ .Labels.instance }}</p>
+        <p><strong>IP máy chủ: </strong>{{ .Labels.ip }}</p>
+        <p><strong>Thông điệp: </strong>{{ .Annotations.summary }}</p>
+        <p><strong>Giá trị hiện tại: </strong>{{ .Annotations.value }}</p>
+        <p>
+          <strong>Thời gian bắt đầu: </strong
+          >{{ .StartsAt.Format "2006-01-02 15:04:05" }}
+        </p>
+        <p><strong> Mô tả chi tiết: </strong>{{ .Annotations.description }}</p>
+      </div>
+      {{ end }}
+
+      <p>
+        Chúng tôi đang theo dõi tình trạng này và sẽ tiếp tục giám sát các sự
+        kiện liên quan. Vui lòng kiểm tra và xử lý cảnh báo này càng sớm càng
+        tốt.
+      </p>
+
+      <div class="footer">
+        <p>Trân trọng,</p>
+        <p>AlertManager</p>
+      </div>
+    </div>
+  </body>
+</html>
+
+{{ end }}
