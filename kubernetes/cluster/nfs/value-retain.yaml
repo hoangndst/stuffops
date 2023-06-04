@@ -1,0 +1,8 @@
+replicaCount: 1
+server: 10.114.0.2
+path: /mnt/nfs/retain
+provisionerName: nfs-provisioner-retain
+name: nfs-retain
+reclaimPolicy: Retain
+archiveOnDelete: true
+

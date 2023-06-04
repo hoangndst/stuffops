@@ -36,4 +36,5 @@
       sudo apt-mark hold kubelet kubeadm kubectl
     tags:
     - kubeadm
-  - name: kubeadm init --pod-network-cidr=192.168.0.0/16 --control-plane-endpoint=master.local:6443
+  - name:   grafana_folder: "Kubernetes"
+

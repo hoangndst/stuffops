@@ -1,0 +1,25 @@
+---
+# Source: kube-prometheus-stack/charts/grafana/templates/ingress.yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: kube-prometheus-stack-grafana
+  namespace: monitoring
+  labels:
+    helm.sh/chart: grafana-6.56.6
+    app.kubernetes.io/name: grafana
+    app.kubernetes.io/instance: kube-prometheus-stack
+    app.kubernetes.io/version: "9.5.2"
+    app.kubernetes.io/managed-by: Helm
+spec:
+  rules:
+    - host: grafana.hoangnd.freeddns.org
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: kube-prometheus-stack-grafana
+                port:
+                  number: 80

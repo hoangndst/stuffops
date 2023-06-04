@@ -6,10 +6,10 @@
   tags:
     - containerd
 - name: Download containerd
-  shell: curl -sL -o /tmp/download/containerd.tar.gz https://github.com/containerd/containerd/releases/download/v1.7.0/containerd-1.7.0-linux-amd64.tar.gz
+  shell: curl -sL -o /tmp/download/containerd.tar.gz https://github.com/containerd/containerd/releases/download/v1.7.2/containerd-1.7.2-linux-amd64.tar.gz
   tags:
     - containerd
-- name: tar Cxzvf /usr/local containerd-1.6.2-linux-amd64.tar.gz
+- name: tar Cxzvf /usr/local containerd
   shell: tar Cxzvf /usr/local /tmp/download/containerd.tar.gz
   tags:
     - containerd
@@ -35,7 +35,7 @@
 
 # Install runc
 - name: Download runc
-  shell: curl -sL -o /tmp/download/runc.amd64 https://github.com/opencontainers/runc/releases/download/v1.1.4/runc.amd64
+  shell: curl -sL -o /tmp/download/runc.amd64 https://github.com/opencontainers/runc/releases/download/v1.1.7/runc.amd64
   tags:
     - runc
 - name: install -m 755 runc.amd64 /usr/local/sbin/runc
@@ -45,7 +45,7 @@
 
 # Install CNI plugins
 - name: Download CNI plugins
-  shell: curl -sL -o /tmp/download/cni-plugins-linux-amd64.tgz https://github.com/containernetworking/plugins/releases/download/v1.2.0/cni-plugins-linux-amd64-v1.2.0.tgz
+  shell: curl -sL -o /tmp/download/cni-plugins-linux-amd64.tgz https://github.com/containernetworking/plugins/releases/download/v1.3.0/cni-plugins-linux-amd64-v1.3.0.tgz
   tags:
     - cni
 - name: mkdir -p /opt/cni/bin
@@ -55,7 +55,7 @@
     mode: 0755
   tags:
     - cni
-- name: tar Cxzvf /opt/cni/bin cni-plugins-linux-amd64-v1.1.1.tgz
+- name: tar Cxzvf /opt/cni/bin cni-plugins-linux-amd64
   shell: tar Cxzvf /opt/cni/bin /tmp/download/cni-plugins-linux-amd64.tgz
   tags:
     - cni

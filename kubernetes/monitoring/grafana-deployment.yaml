@@ -1,0 +1,136 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/component: grafana
+    app.kubernetes.io/name: grafana
+    app.kubernetes.io/part-of: kube-prometheus
+    app.kubernetes.io/version: 9.5.2
+  name: grafana
+  namespace: monitoring
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: grafana
+      app.kubernetes.io/name: grafana
+      app.kubernetes.io/part-of: kube-prometheus
+  template:
+    metadata:
+      annotations:
+        checksum/grafana-config: f6c93c986d2c50845c10914e382be89d
+        checksum/grafana-dashboardproviders: d745af05a8a365888f1900debe97c976
+        checksum/grafana-datasources: ce571e301f5c58c0119e126342cdf81c
+      labels:
+        app.kubernetes.io/component: grafana
+        app.kubernetes.io/name: grafana
+        app.kubernetes.io/part-of: kube-prometheus
+        app.kubernetes.io/version: 9.5.2
+    spec:
+      automountServiceAccountToken: false
+      containers:
+      - env: []
+        image: grafana/grafana:9.5.2
+        name: grafana
+        ports:
+        - containerPort: 3000
+          name: http
+        readinessProbe:
+          httpGet:
+            path: /api/health
+            port: http
+        resources:
+          limits:
+            cpu: 200m
+            memory: 200Mi
+          requests:
+            cpu: 100m
+            memory: 100Mi
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          readOnlyRootFilesystem: true
+          seccompProfile:
+            type: RuntimeDefault
+        volumeMounts:
+        - mountPath: /var/lib/grafana
+          name: grafana-storage
+          readOnly: false
+        - mountPath: /etc/grafana/provisioning/datasources
+          name: grafana-datasources
+          readOnly: false
+        - mountPath: /etc/grafana/provisioning/dashboards
+          name: grafana-dashboards
+          readOnly: false
+        - mountPath: /tmp
+          name: tmp-plugins
+          readOnly: false
+        - mountPath: /grafana-dashboard-definitions/0/addons-trivy-operator
+          name: dashboards-k8s-addons-trivy-operator
+          readOnly: false
+        - mountPath: /grafana-dashboard-definitions/0/api-server
+          name: dashboards-k8s-system-api-server
+          readOnly: false
+        - mountPath: /grafana-dashboard-definitions/0/system-coredns
+          name: dashboards-k8s-system-coredns
+          readOnly: false
+        - mountPath: /grafana-dashboard-definitions/0/views-global
+          name: dashboards-k8s-views-global
+          readOnly: false
+        - mountPath: /grafana-dashboard-definitions/0/views-namespaces
+          name: dashboards-k8s-views-namespaces
+          readOnly: false
+        - mountPath: /grafana-dashboard-definitions/0/views-nodes
+          name: dashboards-k8s-views-nodes
+          readOnly: false
+        - mountPath: /grafana-dashboard-definitions/0/views-pods
+          name: dashboards-k8s-views-pods
+          readOnly: false
+        - mountPath: /etc/grafana
+          name: grafana-config
+          readOnly: false
+      nodeSelector:
+        kubernetes.io/os: linux
+      securityContext:
+        fsGroup: 65534
+        runAsNonRoot: true
+        runAsUser: 65534
+      serviceAccountName: grafana
+      volumes:
+      - emptyDir: {}
+        name: grafana-storage
+      - name: grafana-datasources
+        secret:
+          secretName: grafana-datasources
+      - configMap:
+          name: grafana-dashboards
+        name: grafana-dashboards
+      - emptyDir:
+          medium: Memory
+        name: tmp-plugins
+      - configMap:
+          name: dashboards-k8s-addons-trivy-operator
+        name: dashboards-k8s-addons-trivy-operator
+      - configMap:
+          name: dashboards-k8s-system-api-server
+        name: dashboards-k8s-system-api-server
+      - configMap:
+          name: dashboards-k8s-system-coredns
+        name: dashboards-k8s-system-coredns
+      - configMap:
+          name: dashboards-k8s-views-global
+        name: dashboards-k8s-views-global
+      - configMap:
+          name: dashboards-k8s-views-namespaces
+        name: dashboards-k8s-views-namespaces
+      - configMap:
+          name: dashboards-k8s-views-nodes
+        name: dashboards-k8s-views-nodes
+      - configMap:
+          name: dashboards-k8s-views-pods
+        name: dashboards-k8s-views-pods
+      - name: grafana-config
+        secret:
+          secretName: grafana-config

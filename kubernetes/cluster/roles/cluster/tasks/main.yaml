@@ -1,12 +1,18 @@
-- name: setup
-  import_tasks: setup.yaml
-  become: true
-- name: install cri
-  import_tasks: cri.yaml
-  become: true
-- name: config cri
-  import_tasks: config.yaml
-  become: true
-- name: install kubeadm, kubelet and kubectl
-  import_tasks: kube.yaml
+# - name: setup
+#   import_tasks: setup.yaml
+#   become: true
+# - name: forward ipv4 and letting iptables see bridged traffic
+#   import_tasks: network.yaml
+#   become: true
+# - name: install cri
+#   import_tasks: cri.yaml
+#   become: true
+# - name: config cri
+#   import_tasks: config.yaml
+#   become: true
+# - name: install kubeadm, kubelet and kubectl
+#   import_tasks: kube.yaml
+#   become: true
+- name: join node
+  import_tasks: join_node.yaml
   become: true
