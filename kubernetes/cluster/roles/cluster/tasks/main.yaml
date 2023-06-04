@@ -1,0 +1,12 @@
+- name: setup
+  import_tasks: setup.yaml
+  become: true
+- name: install cri
+  import_tasks: cri.yaml
+  become: true
+- name: config cri
+  import_tasks: config.yaml
+  become: true
+- name: install kubeadm, kubelet and kubectl
+  import_tasks: kube.yaml
+  become: true

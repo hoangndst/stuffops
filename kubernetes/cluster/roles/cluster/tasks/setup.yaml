@@ -1,0 +1,6 @@
+- name: Upgrade all packages
+  apt:
+    upgrade: yes
+    update_cache: yes
+  tags:
+  - upgrade
