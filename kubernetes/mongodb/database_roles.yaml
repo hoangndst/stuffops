@@ -1,0 +1,43 @@
+---
+# Source: community-operator/templates/database_roles.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: mongodb
+  namespace: mongodb
+---
+# Source: community-operator/templates/database_roles.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: mongodb
+  namespace: mongodb 
+rules:
+  - apiGroups:
+      - ""
+    resources:
+      - secrets
+    verbs:
+      - get
+  - apiGroups:
+      - ""
+    resources:
+      - pods
+    verbs:
+      - patch
+      - delete
+      - get
+---
+# Source: community-operator/templates/database_roles.yaml
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: mongodb
+  namespace: mongodb 
+subjects:
+  - kind: ServiceAccount
+    name: mongodb
+roleRef:
+  kind: Role
+  name: mongodb
+  apiGroup: rbac.authorization.k8s.io

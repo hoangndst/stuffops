@@ -1,0 +1,42 @@
+---
+# Source: x509-certificate-exporter/templates/clusterrole.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: x509-cert-exporter
+  labels:
+    helm.sh/chart: x509-certificate-exporter-0.0.0
+    app.kubernetes.io/name: x509-cert-exporter
+    app.kubernetes.io/instance: x509
+    app.kubernetes.io/version: "0.0.0"
+    app.kubernetes.io/managed-by: Helm
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - namespaces
+  verbs:
+  - get
+  - watch
+  - list
+- apiGroups:
+  - ""
+  resources:
+  - secrets
+  verbs:
+  - get
+  - watch
+  - list
+---
+# Source: x509-certificate-exporter/templates/clusterrole.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: x509-cert-exporter-node
+  labels:
+    helm.sh/chart: x509-certificate-exporter-0.0.0
+    app.kubernetes.io/name: x509-cert-exporter
+    app.kubernetes.io/instance: x509
+    app.kubernetes.io/version: "0.0.0"
+    app.kubernetes.io/managed-by: Helm
+rules:

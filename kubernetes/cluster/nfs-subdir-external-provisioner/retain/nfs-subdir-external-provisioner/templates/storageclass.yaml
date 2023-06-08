@@ -10,6 +10,7 @@ metadata:
     release: nfs-subdir-external-provisioner
   name: nfs-client-retain
   annotations:
+    storageclass.kubernetes.io/is-default-class: "true"
 provisioner: cluster.local/nfs-subdir-external-provisioner
 allowVolumeExpansion: true
 reclaimPolicy: Retain

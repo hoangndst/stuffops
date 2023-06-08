@@ -1,0 +1,140 @@
+---
+# Source: traefik/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: traefik
+  namespace: traefik
+  labels:
+    app.kubernetes.io/name: traefik
+    app.kubernetes.io/instance: traefik-default
+    helm.sh/chart: traefik-23.0.1
+    app.kubernetes.io/managed-by: Helm
+  annotations:
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: traefik
+      app.kubernetes.io/instance: traefik-default
+  strategy: 
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+    type: RollingUpdate
+  minReadySeconds: 0
+  template: 
+    metadata:
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/path: "/metrics"
+        prometheus.io/port: "9100"
+      labels:
+        app.kubernetes.io/name: traefik
+        app.kubernetes.io/instance: traefik-default
+        helm.sh/chart: traefik-23.0.1
+        app.kubernetes.io/managed-by: Helm
+    spec:
+      serviceAccountName: traefik
+      terminationGracePeriodSeconds: 60
+      hostNetwork: false
+      initContainers:
+      - command:
+        - sh
+        - -c
+        - touch /ssl-certs/acme.json; chmod -v 600 /ssl-certs/acme.json
+        image: busybox:latest
+        name: volume-permissions
+        securityContext:
+          runAsGroup: 65532
+          runAsNonRoot: true
+          runAsUser: 65532
+        volumeMounts:
+        - mountPath: /ssl-certs
+          name: ssl-certs
+      containers:
+      - image: docker.io/traefik:v2.10.1
+        imagePullPolicy: IfNotPresent
+        name: traefik
+        resources:
+        readinessProbe:
+          httpGet:
+            path: /ping
+            port: 9000
+            scheme: HTTP
+          failureThreshold: 1
+          initialDelaySeconds: 2
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 2
+        livenessProbe:
+          httpGet:
+            path: /ping
+            port: 9000
+            scheme: HTTP
+          failureThreshold: 3
+          initialDelaySeconds: 2
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 2
+        lifecycle:
+        ports:
+        - name: "metrics"
+          containerPort: 9100
+          protocol: "TCP"
+        - name: "traefik"
+          containerPort: 9000
+          protocol: "TCP"
+        - name: "web"
+          containerPort: 8000
+          protocol: "TCP"
+        - name: "websecure"
+          containerPort: 8443
+          protocol: "TCP"
+        securityContext:
+          capabilities:
+            drop:
+            - ALL
+          readOnlyRootFilesystem: true
+        volumeMounts:
+          - name: ssl-certs
+            mountPath: /ssl-certs
+          - name: tmp
+            mountPath: /tmp
+        args:
+          - "--global.checknewversion"
+          - "--global.sendanonymoususage"
+          - "--entrypoints.metrics.address=:9100/tcp"
+          - "--entrypoints.traefik.address=:9000/tcp"
+          - "--entrypoints.web.address=:8000/tcp"
+          - "--entrypoints.websecure.address=:8443/tcp"
+          - "--api.dashboard=true"
+          - "--ping=true"
+          - "--metrics.prometheus=true"
+          - "--metrics.prometheus.entrypoint=metrics"
+          - "--providers.kubernetescrd"
+          - "--providers.kubernetesingress"
+          - "--entrypoints.web.http.redirections.entryPoint.to=:443"
+          - "--entrypoints.web.http.redirections.entryPoint.scheme=https"
+          - "--entrypoints.websecure.http.tls=true"
+          - "--entrypoints.websecure.http.tls.certResolver=production"
+          - "--certificatesresolvers.production.acme.acme.dnsChallenge=map[provider:dynu resolvers:[1.1.1.1:53 8.8.8.8:53]]"
+          - "--certificatesresolvers.production.acme.acme.email=hoangndst@gmail.com"
+          - "--certificatesresolvers.production.acme.acme.storage=/ssl-certs/acme.json"
+        env:
+          - name: DYNU_API_KEY
+            valueFrom:
+              secretKeyRef:
+                key: api-key
+                name: dynu-api-key
+      volumes:
+        - name: ssl-certs
+          emptyDir: {}
+        - name: tmp
+          emptyDir: {}
+      nodeName: control-plane
+      securityContext:
+        fsGroupChangePolicy: OnRootMismatch
+        runAsGroup: 65532
+        runAsNonRoot: true
+        runAsUser: 65532

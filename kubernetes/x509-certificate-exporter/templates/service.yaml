@@ -1,0 +1,23 @@
+---
+# Source: x509-certificate-exporter/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: x509-cert-exporter-headless
+  namespace: monitoring
+  labels:
+    helm.sh/chart: x509-certificate-exporter-0.0.0
+    app.kubernetes.io/name: x509-cert-exporter
+    app.kubernetes.io/instance: x509
+    app.kubernetes.io/version: "0.0.0"
+    app.kubernetes.io/managed-by: Helm
+spec:
+  type: ClusterIP
+  clusterIP: None
+  ports:
+  - name: metrics
+    port: 9793
+    targetPort: metrics
+  selector:
+    app.kubernetes.io/name: x509-cert-exporter
+    app.kubernetes.io/instance: x509

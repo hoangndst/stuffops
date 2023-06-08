@@ -9,11 +9,11 @@ imagePullSecrets: []
 
 nfs:
   server: 10.114.0.2
-  path: /mnt/nfs/retain
+  path: /mnt/nfs/delete
   mountOptions:
-  volumeName: nfs-subdir-external-provisioner-retain
+  volumeName: nfs-subdir-external-provisioner-delete
   # Reclaim policy for the main nfs volume
-  reclaimPolicy: Retain
+  reclaimPolicy: Delete
 
 # For creating the StorageClass automatically:
 storageClass:
@@ -24,11 +24,11 @@ storageClass:
 
   # Set StorageClass as the default StorageClass
   # Ignored if storageClass.create is false
-  defaultClass: false
+  defaultClass: true
 
   # Set a StorageClass name
   # Ignored if storageClass.create is false
-  name: nfs-client-retain
+  name: nfs-client-delete
 
   # Allow volume to be expanded dynamically
   allowVolumeExpansion: true

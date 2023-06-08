@@ -1,0 +1,26 @@
+---
+# Source: x509-certificate-exporter/templates/servicemonitor.yaml
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: x509-cert-exporter
+  namespace: monitoring
+  labels:
+    helm.sh/chart: x509-certificate-exporter-0.0.0
+    app.kubernetes.io/name: x509-cert-exporter
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/instance: kube-prometheus-stack
+    app.kubernetes.io/version: "46.6.0"
+    app.kubernetes.io/part-of: monitoring
+    chart: kube-prometheus-stack-46.6.0
+    release: "kube-prometheus-stack"
+    heritage: "Helm"
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: x509-cert-exporter
+      app.kubernetes.io/instance: x509
+  endpoints:
+  - port: metrics
+    interval: 60s
+    scrapeTimeout: 30s

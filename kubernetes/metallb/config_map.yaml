@@ -9,4 +9,4 @@ data:
     - name: default
       protocol: bgp
       addresses:
-      - 192.168.100.245-192.168.100.254
+      - 10.114.0.100-10.114.0.200

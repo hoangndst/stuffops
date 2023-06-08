@@ -1,0 +1,258 @@
+---
+# Source: x509-certificate-exporter/templates/daemonset.yaml
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: x509-cert-exporter-cp
+  namespace: monitoring
+  labels:
+    helm.sh/chart: x509-certificate-exporter-0.0.0
+    app.kubernetes.io/name: x509-cert-exporter
+    app.kubernetes.io/instance: x509
+    app.kubernetes.io/version: "0.0.0"
+    app.kubernetes.io/managed-by: Helm
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: x509-cert-exporter
+      app.kubernetes.io/instance: x509
+  template:
+    metadata:
+      labels:
+        helm.sh/chart: x509-certificate-exporter-0.0.0
+        app.kubernetes.io/name: x509-cert-exporter
+        app.kubernetes.io/instance: x509
+        app.kubernetes.io/version: "0.0.0"
+        app.kubernetes.io/managed-by: Helm
+      annotations:
+        prometheus.io/port: "9793"
+        prometheus.io/scrape: "true"
+    spec:
+      serviceAccountName: x509-cert-exporter-node
+      tolerations:
+      - effect: NoSchedule
+        key: node-role.kubernetes.io/control-plane
+        operator: Exists
+      nodeSelector:
+        node-role.kubernetes.io/control-plane: ""
+      restartPolicy: Always
+      containers:
+      - name: x509-certificate-exporter
+        securityContext:
+          capabilities:
+            drop:
+            - ALL
+          readOnlyRootFilesystem: true
+          runAsGroup: 0
+          runAsUser: 0
+        resources:
+          limits:
+            cpu: 100m
+            memory: 40Mi
+          requests:
+            cpu: 10m
+            memory: 20Mi
+        image: docker.io/enix/x509-certificate-exporter:3.6.0
+        imagePullPolicy: IfNotPresent
+        args:
+        - --listen-address=:9793
+        - --trim-path-components=3
+        - --watch-file=/mnt/watch/file-9dff78b77fe2f4b0f34f77796df3fea5983e5d4b//var/lib/kubelet/pki/kubelet-client-current.pem
+        - --watch-file=/mnt/watch/file-24d5fa06386fdaf0d20c51e47b92012ea665b9f5//etc/kubernetes/pki/apiserver.crt
+        - --watch-file=/mnt/watch/file-ec8d93d5f83aaefbf9d8c0a3f9643c6bfaffe310//etc/kubernetes/pki/apiserver-etcd-client.crt
+        - --watch-file=/mnt/watch/file-904ae9261099d11adf0c9202070a51aae8a320e2//etc/kubernetes/pki/apiserver-kubelet-client.crt
+        - --watch-file=/mnt/watch/file-15d8ed7db7457d4f5108195ceb52a124a8703898//etc/kubernetes/pki/ca.crt
+        - --watch-file=/mnt/watch/file-99c1687bfbcf4396bdf08131c2971b798d8eb94f//etc/kubernetes/pki/front-proxy-ca.crt
+        - --watch-file=/mnt/watch/file-dfdaa9ca375647a99973f96da9f7fd05a44e5e4f//etc/kubernetes/pki/front-proxy-client.crt
+        - --watch-file=/mnt/watch/file-3642e1c1dd6ed90cba49e7452088e5041441ca65//etc/kubernetes/pki/etcd/ca.crt
+        - --watch-file=/mnt/watch/file-b86beb70611cabc608c7d5c2748d4c7c2850c9bc//etc/kubernetes/pki/etcd/healthcheck-client.crt
+        - --watch-file=/mnt/watch/file-8aab373cf6e572c2c86696ccdb24d0f300e008bb//etc/kubernetes/pki/etcd/peer.crt
+        - --watch-file=/mnt/watch/file-99efa9a2170f5bab53446fc2b983ad325b22a113//etc/kubernetes/pki/etcd/server.crt
+        - --watch-kubeconf=/mnt/watch/kube-35a4fcc6ab089d789fecaeed428cc8392148766a//etc/kubernetes/admin.conf
+        - --watch-kubeconf=/mnt/watch/kube-41a6b8b147ef309a70619cafcfeb8961b3c29cae//etc/kubernetes/controller-manager.conf
+        - --watch-kubeconf=/mnt/watch/kube-ee9e4e203c758bb95ec439d60c16fb4e8854efaf//etc/kubernetes/scheduler.conf
+        - --max-cache-duration=300s
+        volumeMounts:
+        - name: file-9dff78b77fe2f4b0f34f77796df3fea5983e5d4b
+          mountPath: /mnt/watch/file-9dff78b77fe2f4b0f34f77796df3fea5983e5d4b//var/lib/kubelet/pki
+          readOnly: true
+        - name: file-24d5fa06386fdaf0d20c51e47b92012ea665b9f5
+          mountPath: /mnt/watch/file-24d5fa06386fdaf0d20c51e47b92012ea665b9f5//etc/kubernetes/pki
+          readOnly: true
+        - name: file-ec8d93d5f83aaefbf9d8c0a3f9643c6bfaffe310
+          mountPath: /mnt/watch/file-ec8d93d5f83aaefbf9d8c0a3f9643c6bfaffe310//etc/kubernetes/pki
+          readOnly: true
+        - name: file-904ae9261099d11adf0c9202070a51aae8a320e2
+          mountPath: /mnt/watch/file-904ae9261099d11adf0c9202070a51aae8a320e2//etc/kubernetes/pki
+          readOnly: true
+        - name: file-15d8ed7db7457d4f5108195ceb52a124a8703898
+          mountPath: /mnt/watch/file-15d8ed7db7457d4f5108195ceb52a124a8703898//etc/kubernetes/pki
+          readOnly: true
+        - name: file-99c1687bfbcf4396bdf08131c2971b798d8eb94f
+          mountPath: /mnt/watch/file-99c1687bfbcf4396bdf08131c2971b798d8eb94f//etc/kubernetes/pki
+          readOnly: true
+        - name: file-dfdaa9ca375647a99973f96da9f7fd05a44e5e4f
+          mountPath: /mnt/watch/file-dfdaa9ca375647a99973f96da9f7fd05a44e5e4f//etc/kubernetes/pki
+          readOnly: true
+        - name: file-3642e1c1dd6ed90cba49e7452088e5041441ca65
+          mountPath: /mnt/watch/file-3642e1c1dd6ed90cba49e7452088e5041441ca65//etc/kubernetes/pki/etcd
+          readOnly: true
+        - name: file-b86beb70611cabc608c7d5c2748d4c7c2850c9bc
+          mountPath: /mnt/watch/file-b86beb70611cabc608c7d5c2748d4c7c2850c9bc//etc/kubernetes/pki/etcd
+          readOnly: true
+        - name: file-8aab373cf6e572c2c86696ccdb24d0f300e008bb
+          mountPath: /mnt/watch/file-8aab373cf6e572c2c86696ccdb24d0f300e008bb//etc/kubernetes/pki/etcd
+          readOnly: true
+        - name: file-99efa9a2170f5bab53446fc2b983ad325b22a113
+          mountPath: /mnt/watch/file-99efa9a2170f5bab53446fc2b983ad325b22a113//etc/kubernetes/pki/etcd
+          readOnly: true
+        - name: kube-35a4fcc6ab089d789fecaeed428cc8392148766a
+          mountPath: /mnt/watch/kube-35a4fcc6ab089d789fecaeed428cc8392148766a//etc/kubernetes
+          readOnly: true
+        - name: kube-41a6b8b147ef309a70619cafcfeb8961b3c29cae
+          mountPath: /mnt/watch/kube-41a6b8b147ef309a70619cafcfeb8961b3c29cae//etc/kubernetes
+          readOnly: true
+        - name: kube-ee9e4e203c758bb95ec439d60c16fb4e8854efaf
+          mountPath: /mnt/watch/kube-ee9e4e203c758bb95ec439d60c16fb4e8854efaf//etc/kubernetes
+          readOnly: true
+        ports:
+        - name: metrics
+          containerPort: 9793
+      hostNetwork: false
+      volumes:
+      - name: file-9dff78b77fe2f4b0f34f77796df3fea5983e5d4b
+        hostPath:
+          path: /var/lib/kubelet/pki
+          type: Directory
+      - name: file-24d5fa06386fdaf0d20c51e47b92012ea665b9f5
+        hostPath:
+          path: /etc/kubernetes/pki
+          type: Directory
+      - name: file-ec8d93d5f83aaefbf9d8c0a3f9643c6bfaffe310
+        hostPath:
+          path: /etc/kubernetes/pki
+          type: Directory
+      - name: file-904ae9261099d11adf0c9202070a51aae8a320e2
+        hostPath:
+          path: /etc/kubernetes/pki
+          type: Directory
+      - name: file-15d8ed7db7457d4f5108195ceb52a124a8703898
+        hostPath:
+          path: /etc/kubernetes/pki
+          type: Directory
+      - name: file-99c1687bfbcf4396bdf08131c2971b798d8eb94f
+        hostPath:
+          path: /etc/kubernetes/pki
+          type: Directory
+      - name: file-dfdaa9ca375647a99973f96da9f7fd05a44e5e4f
+        hostPath:
+          path: /etc/kubernetes/pki
+          type: Directory
+      - name: file-3642e1c1dd6ed90cba49e7452088e5041441ca65
+        hostPath:
+          path: /etc/kubernetes/pki/etcd
+          type: Directory
+      - name: file-b86beb70611cabc608c7d5c2748d4c7c2850c9bc
+        hostPath:
+          path: /etc/kubernetes/pki/etcd
+          type: Directory
+      - name: file-8aab373cf6e572c2c86696ccdb24d0f300e008bb
+        hostPath:
+          path: /etc/kubernetes/pki/etcd
+          type: Directory
+      - name: file-99efa9a2170f5bab53446fc2b983ad325b22a113
+        hostPath:
+          path: /etc/kubernetes/pki/etcd
+          type: Directory
+      - name: kube-35a4fcc6ab089d789fecaeed428cc8392148766a
+        hostPath:
+          path: /etc/kubernetes
+          type: Directory
+      - name: kube-41a6b8b147ef309a70619cafcfeb8961b3c29cae
+        hostPath:
+          path: /etc/kubernetes
+          type: Directory
+      - name: kube-ee9e4e203c758bb95ec439d60c16fb4e8854efaf
+        hostPath:
+          path: /etc/kubernetes
+          type: Directory
+---
+# Source: x509-certificate-exporter/templates/daemonset.yaml
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: x509-cert-exporter-nodes
+  namespace: monitoring
+  labels:
+    helm.sh/chart: x509-certificate-exporter-0.0.0
+    app.kubernetes.io/name: x509-cert-exporter
+    app.kubernetes.io/instance: x509
+    app.kubernetes.io/version: "0.0.0"
+    app.kubernetes.io/managed-by: Helm
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: x509-cert-exporter
+      app.kubernetes.io/instance: x509
+  template:
+    metadata:
+      labels:
+        helm.sh/chart: x509-certificate-exporter-0.0.0
+        app.kubernetes.io/name: x509-cert-exporter
+        app.kubernetes.io/instance: x509
+        app.kubernetes.io/version: "0.0.0"
+        app.kubernetes.io/managed-by: Helm
+      annotations:
+        prometheus.io/port: "9793"
+        prometheus.io/scrape: "true"
+    spec:
+      serviceAccountName: x509-cert-exporter-node
+      tolerations:
+      - effect: NoSchedule
+        key: node-role.kubernetes.io/ingress
+        operator: Exists
+      restartPolicy: Always
+      containers:
+      - name: x509-certificate-exporter
+        securityContext:
+          capabilities:
+            drop:
+            - ALL
+          readOnlyRootFilesystem: true
+          runAsGroup: 0
+          runAsUser: 0
+        resources:
+          limits:
+            cpu: 100m
+            memory: 40Mi
+          requests:
+            cpu: 10m
+            memory: 20Mi
+        image: docker.io/enix/x509-certificate-exporter:3.6.0
+        imagePullPolicy: IfNotPresent
+        args:
+        - --listen-address=:9793
+        - --trim-path-components=3
+        - --watch-file=/mnt/watch/file-9dff78b77fe2f4b0f34f77796df3fea5983e5d4b//var/lib/kubelet/pki/kubelet-client-current.pem
+        - --watch-file=/mnt/watch/file-15d8ed7db7457d4f5108195ceb52a124a8703898//etc/kubernetes/pki/ca.crt
+        - --max-cache-duration=300s
+        volumeMounts:
+        - name: file-9dff78b77fe2f4b0f34f77796df3fea5983e5d4b
+          mountPath: /mnt/watch/file-9dff78b77fe2f4b0f34f77796df3fea5983e5d4b//var/lib/kubelet/pki
+          readOnly: true
+        - name: file-15d8ed7db7457d4f5108195ceb52a124a8703898
+          mountPath: /mnt/watch/file-15d8ed7db7457d4f5108195ceb52a124a8703898//etc/kubernetes/pki
+          readOnly: true
+        ports:
+        - name: metrics
+          containerPort: 9793
+      hostNetwork: false
+      volumes:
+      - name: file-9dff78b77fe2f4b0f34f77796df3fea5983e5d4b
+        hostPath:
+          path: /var/lib/kubelet/pki
+          type: Directory
+      - name: file-15d8ed7db7457d4f5108195ceb52a124a8703898
+        hostPath:
+          path: /etc/kubernetes/pki
+          type: Directory

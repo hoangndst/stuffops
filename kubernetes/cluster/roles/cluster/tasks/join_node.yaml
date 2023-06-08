@@ -1,4 +1,3 @@
 - name: kubeadm join
   shell: |
-    kubeadm join 10.114.0.2:6443 --token eoxc99.qqwmnckhkrdjt2j2 \
-    --discovery-token-ca-cert-hash sha256:adc0cb4ba7b3e317bc4854604ca51acb9f9927d3237b962b8226f5c5eb49f397 
+    kubeadm join 10.114.0.2:6443 --token qopd41.rlbyesr9xvazhita --discovery-token-ca-cert-hash sha256:befb7df6ad9fd770e94886744e473e819bf5db1e856465fac176841d1f9f4a7d 

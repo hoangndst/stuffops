@@ -1,0 +1,40 @@
+---
+# Source: x509-certificate-exporter/templates/clusterrolebinding.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: x509-cert-exporter
+  labels:
+    helm.sh/chart: x509-certificate-exporter-0.0.0
+    app.kubernetes.io/name: x509-cert-exporter
+    app.kubernetes.io/instance: x509
+    app.kubernetes.io/version: "0.0.0"
+    app.kubernetes.io/managed-by: Helm
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: x509-cert-exporter
+subjects:
+- kind: ServiceAccount
+  name: x509-cert-exporter
+  namespace: monitoring
+---
+# Source: x509-certificate-exporter/templates/clusterrolebinding.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: x509-cert-exporter-node
+  labels:
+    helm.sh/chart: x509-certificate-exporter-0.0.0
+    app.kubernetes.io/name: x509-cert-exporter
+    app.kubernetes.io/instance: x509
+    app.kubernetes.io/version: "0.0.0"
+    app.kubernetes.io/managed-by: Helm
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: x509-cert-exporter-node
+subjects:
+- kind: ServiceAccount
+  name: x509-cert-exporter-node
+  namespace: monitoring
