@@ -1,0 +1,17 @@
+---
+# Source: nexus-repository-manager/templates/test/test-connection.yaml
+# This test checks that the server is up and running by making a wget
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "nexus-test-connection"
+  annotations:
+    "helm.sh/hook": test
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded,hook-failed
+spec:
+  containers:
+    - name: nexus-test-connection
+      image: busybox
+      command: ['wget']
+      args: ['nexus-nexus-repository-manager:8081']
+  restartPolicy: Never

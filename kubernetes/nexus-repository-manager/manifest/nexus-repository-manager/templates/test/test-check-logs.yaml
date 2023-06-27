@@ -1,0 +1,25 @@
+---
+# Source: nexus-repository-manager/templates/test/test-check-logs.yaml
+# This test checks the logs to confirm the running app version is the same as the chart app version
+# This test will run only if the flag persistence.enabled is true on the values.yaml file
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "nexus-test-check-logs"
+  annotations:
+    "helm.sh/hook": test
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded,hook-failed
+spec:
+  containers:
+    - name: nexus-test-check-logs
+      image: busybox
+      command: ["/bin/sh"]
+      args: ["-c", "cat /nexus-data/log/nexus.log | grep 3.56.0 || exit 1"]
+      volumeMounts:
+         - mountPath: /nexus-data	
+           name: nexus-repository-manager-data
+  volumes:
+    - name: nexus-repository-manager-data          
+      persistentVolumeClaim:
+        claimName: nexus-nexus-repository-manager-data         
+  restartPolicy: Never

@@ -2,21 +2,21 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: vdt-frontend
-  namesapce: vdt-app
+  namespace: vdt
   labels:
     app: vdt-frontend
 spec:
   replicas: 3
   selector:
     matchLabels:
-      app: nginx
+      app: vdt-frontend
   template:
     metadata:
       labels:
-        app: nginx
+        app: vdt-frontend
     spec:
       containers:
-      - name: nginx
-        image: nginx:1.14.2
+      - name: vd-frontend
+        image: hoangndst/vdt-frontend:latest
         ports:
         - containerPort: 80

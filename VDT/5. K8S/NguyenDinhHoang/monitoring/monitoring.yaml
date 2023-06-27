@@ -1,5 +1,4 @@
 ---
-# Source: kube-prometheus-stack/charts/grafana/templates/serviceaccount.yaml
 apiVersion: v1
 kind: ServiceAccount
 metadata:
@@ -12,7 +11,6 @@ metadata:
   name: kube-prometheus-stack-grafana
   namespace: monitoring
 ---
-# Source: kube-prometheus-stack/charts/kube-state-metrics/templates/serviceaccount.yaml
 apiVersion: v1
 kind: ServiceAccount
 metadata:
@@ -29,7 +27,6 @@ metadata:
   namespace: monitoring
 imagePullSecrets:
 ---
-# Source: kube-prometheus-stack/charts/prometheus-node-exporter/templates/serviceaccount.yaml
 apiVersion: v1
 kind: ServiceAccount
 metadata:
@@ -46,7 +43,6 @@ metadata:
     jobLabel: node-exporter
     release: kube-prometheus-stack
 ---
-# Source: kube-prometheus-stack/templates/alertmanager/serviceaccount.yaml
 apiVersion: v1
 kind: ServiceAccount
 metadata:
@@ -66,7 +62,6 @@ metadata:
     heritage: "Helm"
 automountServiceAccountToken: true
 ---
-# Source: kube-prometheus-stack/templates/prometheus-operator/serviceaccount.yaml
 apiVersion: v1
 kind: ServiceAccount
 metadata:
@@ -85,7 +80,6 @@ metadata:
     release: "kube-prometheus-stack"
     heritage: "Helm"
 ---
-# Source: kube-prometheus-stack/templates/prometheus/serviceaccount.yaml
 apiVersion: v1
 kind: ServiceAccount
 metadata:
@@ -104,7 +98,6 @@ metadata:
     release: "kube-prometheus-stack"
     heritage: "Helm"
 ---
-# Source: kube-prometheus-stack/charts/grafana/templates/secret.yaml
 apiVersion: v1
 kind: Secret
 metadata:
@@ -122,7 +115,6 @@ data:
   admin-password: "SG9hbmcxOTk5"
   ldap-toml: ""
 ---
-# Source: kube-prometheus-stack/templates/alertmanager/secret.yaml
 apiVersion: v1
 kind: Secret
 metadata:
@@ -142,7 +134,6 @@ data:
   alertmanager.yaml: "Z2xvYmFsOgogIHJlc29sdmVfdGltZW91dDogNW0KaW5oaWJpdF9ydWxlczoKLSBlcXVhbDoKICAtIG5hbWVzcGFjZQogIC0gYWxlcnRuYW1lCiAgc291cmNlX21hdGNoZXJzOgogIC0gc2V2ZXJpdHkgPSBjcml0aWNhbAogIHRhcmdldF9tYXRjaGVyczoKICAtIHNldmVyaXR5ID1+IHdhcm5pbmd8aW5mbwotIGVxdWFsOgogIC0gbmFtZXNwYWNlCiAgLSBhbGVydG5hbWUKICBzb3VyY2VfbWF0Y2hlcnM6CiAgLSBzZXZlcml0eSA9IHdhcm5pbmcKICB0YXJnZXRfbWF0Y2hlcnM6CiAgLSBzZXZlcml0eSA9IGluZm8KLSBlcXVhbDoKICAtIG5hbWVzcGFjZQogIHNvdXJjZV9tYXRjaGVyczoKICAtIGFsZXJ0bmFtZSA9IEluZm9JbmhpYml0b3IKICB0YXJnZXRfbWF0Y2hlcnM6CiAgLSBzZXZlcml0eSA9IGluZm8KcmVjZWl2ZXJzOgotIG5hbWU6ICJudWxsIgpyb3V0ZToKICBncm91cF9ieToKICAtIG5hbWVzcGFjZQogIGdyb3VwX2ludGVydmFsOiA1bQogIGdyb3VwX3dhaXQ6IDMwcwogIHJlY2VpdmVyOiAibnVsbCIKICByZXBlYXRfaW50ZXJ2YWw6IDEyaAogIHJvdXRlczoKICAtIG1hdGNoZXJzOgogICAgLSBhbGVydG5hbWUgPX4gIkluZm9JbmhpYml0b3J8V2F0Y2hkb2ciCiAgICByZWNlaXZlcjogIm51bGwiCnRlbXBsYXRlczoKLSAvZXRjL2FsZXJ0bWFuYWdlci9jb25maWcvKi50bXBs"
   email.tmpl: "e3sgZGVmaW5lICJlbWFpbC52aWV0dGVsLnN1YmplY3QiIH19QWxlcnQgb24ge3sgcmFuZ2UuQWxlcnRzLkZpcmluZwp9fXt7IC5MYWJlbHMuaW5zdGFuY2UgfX0ge3sgZW5kIH19e3sgZW5kIH19Cnt7IGRlZmluZSAiZW1haWwudmlldHRlbC5odG1sIiB9fQo8IURPQ1RZUEUgaHRtbD4KPGh0bWw+CiAgPGhlYWQ+CiAgICA8bWV0YSBjaGFyc2V0PSJVVEYtOCIgLz4KICAgIDx0aXRsZT5bQWxlcnRNYW5hZ2VyXSBD4bqjbmggYsOhbzoge3sgLkdyb3VwTGFiZWxzLmFsZXJ0bmFtZSB9fTwvdGl0bGU+CiAgICA8c3R5bGU+CiAgICAgIGJvZHkgewogICAgICAgIGZvbnQtZmFtaWx5OiBBcmlhbCwgc2Fucy1zZXJpZjsKICAgICAgICBmb250LXNpemU6IDE0cHg7CiAgICAgICAgbGluZS1oZWlnaHQ6IDEuNjsKICAgICAgfQoKICAgICAgaDEsCiAgICAgIGgyLAogICAgICBoMyB7CiAgICAgICAgbWFyZ2luOiAwOwogICAgICAgIHBhZGRpbmc6IDA7CiAgICAgIH0KCiAgICAgIC5jb250YWluZXIgewogICAgICAgIG1heC13aWR0aDogNjAwcHg7CiAgICAgICAgbWFyZ2luOiAwIGF1dG87CiAgICAgICAgcGFkZGluZzogMjBweDsKICAgICAgICBiYWNrZ3JvdW5kLWNvbG9yOiAjZjdmN2Y3OwogICAgICAgIGJvcmRlcjogMXB4IHNvbGlkICNlNWU1ZTU7CiAgICAgIH0KCiAgICAgIC5oZWFkZXIgewogICAgICAgIGJhY2tncm91bmQtY29sb3I6ICNmZGZkZmYwMDsKICAgICAgICBjb2xvcjogIzAwMDAwMDsKICAgICAgICBwYWRkaW5nOiAyMHB4OwogICAgICAgIHRleHQtYWxpZ246IGNlbnRlcjsKICAgICAgfQoKICAgICAgLmxvZ28gewogICAgICAgIHdpZHRoOiAyMDBweDsKICAgICAgICBtYXJnaW46IDAgYXV0bzsKICAgICAgfQoKICAgICAgLmFsZXJ0IHsKICAgICAgICBwYWRkaW5nOiAyMHB4OwogICAgICAgIGJvcmRlci1yYWRpdXM6IDVweDsKICAgICAgICBtYXJnaW4tYm90dG9tOiAyMHB4OwogICAgICB9CgogICAgICAuY3JpdGljYWwgewogICAgICAgIGJhY2tncm91bmQtY29sb3I6ICNkYzM1NDU7CiAgICAgICAgY29sb3I6ICNmZmZmZmY7CiAgICAgIH0KCiAgICAgIC53YXJuaW5nIHsKICAgICAgICBiYWNrZ3JvdW5kLWNvbG9yOiAjZmZjMTA3OwogICAgICAgIGNvbG9yOiAjMjEyNTI5OwogICAgICB9CgogICAgICAuaW5mbyB7CiAgICAgICAgYmFja2dyb3VuZC1jb2xvcjogIzE3YTJiODsKICAgICAgICBjb2xvcjogI2ZmZmZmZjsKICAgICAgfQoKICAgICAgLmZvb3RlciB7CiAgICAgICAgbWFyZ2luLXRvcDogMjBweDsKICAgICAgICB0ZXh0LWFsaWduOiBjZW50ZXI7CiAgICAgIH0KICAgIDwvc3R5bGU+CiAgPC9oZWFkPgogIDxib2R5PgogICAgPGRpdiBjbGFzcz0iY29udGFpbmVyIj4KICAgICAgPGRpdiBjbGFzcz0iaGVhZGVyIj4KICAgICAgICA8aDE+W0FsZXJ0TWFuYWdlcl0gQ+G6o25oIGLDoW8gbeG7m2k8L2gxPgogICAgICAgIDxoMj48c3Ryb25nPlPhu5EgbMaw4bujbmcgY+G6o25oIGLDoW86IDwvc3Ryb25nPnt7IC5BbGVydHMgfCBsZW4gfX08L2gyPgogICAgICA8L2Rpdj4KICAgICAgPGgzPlhpbiBjaMOgbyw8L2gzPgogICAgICA8cD4KICAgICAgICBDaMO6bmcgdMO0aSB4aW4gdGjDtG5nIGLDoW8gcuG6sW5nIMSRw6MgeOG6o3kgcmEgbeG7mXQgY+G6o25oIGLDoW8gbeG7m2kgdHJvbmcgaOG7hyB0aOG7kW5nLgogICAgICAgIETGsOG7m2kgxJHDonkgbMOgIHRow7RuZyB0aW4gY2hpIHRp4bq/dDoKICAgICAgPC9wPgogICAgICB7eyByYW5nZS5BbGVydHMgfX0KICAgICAgPGRpdiBjbGFzcz0iYWxlcnQge3sgLkxhYmVscy5zZXZlcml0eSB9fSI+CiAgICAgICAgPGgyPnt7IC5MYWJlbHMuYWxlcnRuYW1lIH19PC9oMj4KICAgICAgICA8cD48c3Ryb25nPk3hu6ljIMSR4buZOiA8L3N0cm9uZz57eyAuTGFiZWxzLnNldmVyaXR5IH19PC9wPgogICAgICAgIDxwPjxzdHJvbmc+VMOqbiBtw6F5IGNo4bunOiA8L3N0cm9uZz57eyAuTGFiZWxzLmluc3RhbmNlIH19PC9wPgogICAgICAgIDxwPjxzdHJvbmc+SVAgbcOheSBjaOG7pzogPC9zdHJvbmc+e3sgLkxhYmVscy5pcCB9fTwvcD4KICAgICAgICA8cD48c3Ryb25nPlRow7RuZyDEkWnhu4dwOiA8L3N0cm9uZz57eyAuQW5ub3RhdGlvbnMuc3VtbWFyeSB9fTwvcD4KICAgICAgICA8cD48c3Ryb25nPkdpw6EgdHLhu4sgaGnhu4duIHThuqFpOiA8L3N0cm9uZz57eyAuQW5ub3RhdGlvbnMudmFsdWUgfX08L3A+CiAgICAgICAgPHA+CiAgICAgICAgICA8c3Ryb25nPlRo4budaSBnaWFuIGLhuq90IMSR4bqndTogPC9zdHJvbmcKICAgICAgICAgID57eyAuU3RhcnRzQXQuRm9ybWF0ICIyMDA2LTAxLTAyIDE1OjA0OjA1IiB9fQogICAgICAgIDwvcD4KICAgICAgICA8cD48c3Ryb25nPiBNw7QgdOG6oyBjaGkgdGnhur90OiA8L3N0cm9uZz57eyAuQW5ub3RhdGlvbnMuZGVzY3JpcHRpb24gfX08L3A+CiAgICAgIDwvZGl2PgogICAgICB7eyBlbmQgfX0KCiAgICAgIDxwPgogICAgICAgIENow7puZyB0w7RpIMSRYW5nIHRoZW8gZMO1aSB0w6xuaCB0cuG6oW5nIG7DoHkgdsOgIHPhur0gdGnhur9wIHThu6VjIGdpw6FtIHPDoXQgY8OhYyBz4buxCiAgICAgICAga2nhu4duIGxpw6puIHF1YW4uIFZ1aSBsw7JuZyBraeG7g20gdHJhIHbDoCB44butIGzDvSBj4bqjbmggYsOhbyBuw6B5IGPDoG5nIHPhu5ttIGPDoG5nCiAgICAgICAgdOG7kXQuCiAgICAgIDwvcD4KCiAgICAgIDxkaXYgY2xhc3M9ImZvb3RlciI+CiAgICAgICAgPHA+VHLDom4gdHLhu41uZyw8L3A+CiAgICAgICAgPHA+QWxlcnRNYW5hZ2VyPC9wPgogICAgICA8L2Rpdj4KICAgIDwvZGl2PgogIDwvYm9keT4KPC9odG1sPgoKe3sgZW5kIH19"
 ---
-# Source: kube-prometheus-stack/charts/grafana/templates/configmap-dashboard-provider.yaml
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -169,7 +160,6 @@ data:
           foldersFromFilesStructure: false
           path: /tmp/dashboards
 ---
-# Source: kube-prometheus-stack/charts/grafana/templates/configmap.yaml
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -197,7 +187,6 @@ data:
     [server]
     domain = ''
 ---
-# Source: kube-prometheus-stack/templates/grafana/configmaps-datasources.yaml
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -228,7 +217,6 @@ data:
         httpMethod: POST
         timeInterval: 30s
 ---
-# Source: kube-prometheus-stack/charts/grafana/templates/clusterrole.yaml
 kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
@@ -244,7 +232,6 @@ rules:
     resources: ["configmaps", "secrets"]
     verbs: ["get", "watch", "list"]
 ---
-# Source: kube-prometheus-stack/charts/kube-state-metrics/templates/role.yaml
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
@@ -400,7 +387,6 @@ rules:
     - volumeattachments
   verbs: ["list", "watch"]
 ---
-# Source: kube-prometheus-stack/templates/prometheus-operator/clusterrole.yaml
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
@@ -494,7 +480,6 @@ rules:
   - list
   - watch
 ---
-# Source: kube-prometheus-stack/templates/prometheus/clusterrole.yaml
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
@@ -528,7 +513,6 @@ rules:
 - nonResourceURLs: ["/metrics", "/metrics/cadvisor"]
   verbs: ["get"]
 ---
-# Source: kube-prometheus-stack/charts/grafana/templates/clusterrolebinding.yaml
 kind: ClusterRoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
@@ -548,7 +532,6 @@ roleRef:
   name: kube-prometheus-stack-grafana-clusterrole
   apiGroup: rbac.authorization.k8s.io
 ---
-# Source: kube-prometheus-stack/charts/kube-state-metrics/templates/clusterrolebinding.yaml
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
@@ -571,7 +554,6 @@ subjects:
   name: kube-prometheus-stack-kube-state-metrics
   namespace: monitoring
 ---
-# Source: kube-prometheus-stack/templates/prometheus-operator/clusterrolebinding.yaml
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
@@ -595,7 +577,6 @@ subjects:
   name: kube-prometheus-stack-moni-operator
   namespace: monitoring
 ---
-# Source: kube-prometheus-stack/templates/prometheus/clusterrolebinding.yaml
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
@@ -619,7 +600,6 @@ subjects:
     name: kube-prometheus-stack-moni-prometheus
     namespace: monitoring
 ---
-# Source: kube-prometheus-stack/charts/grafana/templates/role.yaml
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
@@ -633,7 +613,6 @@ metadata:
     app.kubernetes.io/managed-by: Helm
 rules: []
 ---
-# Source: kube-prometheus-stack/charts/grafana/templates/rolebinding.yaml
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
@@ -654,7 +633,6 @@ subjects:
   name: kube-prometheus-stack-grafana
   namespace: monitoring
 ---
-# Source: kube-prometheus-stack/charts/grafana/templates/service.yaml
 apiVersion: v1
 kind: Service
 metadata:
@@ -677,7 +655,6 @@ spec:
     app.kubernetes.io/name: grafana
     app.kubernetes.io/instance: kube-prometheus-stack
 ---
-# Source: kube-prometheus-stack/charts/kube-state-metrics/templates/service.yaml
 apiVersion: v1
 kind: Service
 metadata:
@@ -706,7 +683,6 @@ spec:
     app.kubernetes.io/name: kube-state-metrics
     app.kubernetes.io/instance: kube-prometheus-stack
 ---
-# Source: kube-prometheus-stack/charts/prometheus-node-exporter/templates/service.yaml
 apiVersion: v1
 kind: Service
 metadata:
@@ -735,7 +711,6 @@ spec:
     app.kubernetes.io/name: prometheus-node-exporter
     app.kubernetes.io/instance: kube-prometheus-stack
 ---
-# Source: kube-prometheus-stack/templates/alertmanager/service.yaml
 apiVersion: v1
 kind: Service
 metadata:
@@ -763,7 +738,6 @@ spec:
     alertmanager: kube-prometheus-stack-moni-alertmanager
   type: "ClusterIP"
 ---
-# Source: kube-prometheus-stack/templates/exporters/core-dns/service.yaml
 apiVersion: v1
 kind: Service
 metadata:
@@ -790,7 +764,6 @@ spec:
   selector:
     k8s-app: kube-dns
 ---
-# Source: kube-prometheus-stack/templates/exporters/kube-controller-manager/service.yaml
 apiVersion: v1
 kind: Service
 metadata:
@@ -818,7 +791,6 @@ spec:
     component: kube-controller-manager
   type: ClusterIP
 ---
-# Source: kube-prometheus-stack/templates/exporters/kube-etcd/service.yaml
 apiVersion: v1
 kind: Service
 metadata:
@@ -846,7 +818,6 @@ spec:
     component: etcd
   type: ClusterIP
 ---
-# Source: kube-prometheus-stack/templates/exporters/kube-proxy/service.yaml
 apiVersion: v1
 kind: Service
 metadata:
@@ -874,7 +845,6 @@ spec:
     k8s-app: kube-proxy
   type: ClusterIP
 ---
-# Source: kube-prometheus-stack/templates/exporters/kube-scheduler/service.yaml
 apiVersion: v1
 kind: Service
 metadata:
@@ -902,7 +872,6 @@ spec:
     component: kube-scheduler
   type: ClusterIP
 ---
-# Source: kube-prometheus-stack/templates/prometheus-operator/service.yaml
 apiVersion: v1
 kind: Service
 metadata:
@@ -928,7 +897,6 @@ spec:
     release: "kube-prometheus-stack"
   type: "ClusterIP"
 ---
-# Source: kube-prometheus-stack/templates/prometheus/service.yaml
 apiVersion: v1
 kind: Service
 metadata:
@@ -956,7 +924,6 @@ spec:
     prometheus: kube-prometheus-stack-moni-prometheus
   type: "ClusterIP"
 ---
-# Source: kube-prometheus-stack/charts/prometheus-node-exporter/templates/daemonset.yaml
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
@@ -1071,7 +1038,6 @@ spec:
           hostPath:
             path: /
 ---
-# Source: kube-prometheus-stack/charts/grafana/templates/deployment.yaml
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -1277,7 +1243,6 @@ spec:
           emptyDir:
             {}
 ---
-# Source: kube-prometheus-stack/charts/kube-state-metrics/templates/deployment.yaml
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -1347,7 +1312,6 @@ spec:
             drop:
             - ALL
 ---
-# Source: kube-prometheus-stack/templates/prometheus-operator/deployment.yaml
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -1430,7 +1394,6 @@ spec:
           type: RuntimeDefault
       serviceAccountName: kube-prometheus-stack-moni-operator
 ---
-# Source: kube-prometheus-stack/templates/alertmanager/alertmanager.yaml
 apiVersion: monitoring.coreos.com/v1
 kind: Alertmanager
 metadata:
@@ -1469,7 +1432,6 @@ spec:
       type: RuntimeDefault
   portName: http-web
 ---
-# Source: kube-prometheus-stack/templates/prometheus-operator/admission-webhooks/mutatingWebhookConfiguration.yaml
 apiVersion: admissionregistration.k8s.io/v1
 kind: MutatingWebhookConfiguration
 metadata:
@@ -1505,7 +1467,6 @@ webhooks:
     admissionReviewVersions: ["v1", "v1beta1"]
     sideEffects: None
 ---
-# Source: kube-prometheus-stack/templates/prometheus/prometheus.yaml
 apiVersion: monitoring.coreos.com/v1
 kind: Prometheus
 metadata:
@@ -1589,7 +1550,6 @@ spec:
   portName: http-web
   hostNetwork: false
 ---
-# Source: kube-prometheus-stack/templates/prometheus/rules-1.14/alertmanager.rules.yaml
 apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
@@ -1732,7 +1692,6 @@ spec:
       labels:
         severity: critical
 ---
-# Source: kube-prometheus-stack/templates/prometheus/rules-1.14/config-reloaders.yaml
 apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
@@ -1764,7 +1723,6 @@ spec:
       labels:
         severity: warning
 ---
-# Source: kube-prometheus-stack/templates/prometheus/rules-1.14/etcd.yaml
 apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
@@ -1932,7 +1890,6 @@ spec:
       labels:
         severity: warning
 ---
-# Source: kube-prometheus-stack/templates/prometheus/rules-1.14/general.rules.yaml
 apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
@@ -2000,7 +1957,6 @@ spec:
       labels:
         severity: none
 ---
-# Source: kube-prometheus-stack/templates/prometheus/rules-1.14/k8s.rules.yaml
 apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
@@ -2167,7 +2123,6 @@ spec:
         workload_type: job
       record: namespace_workload_pod:kube_pod_owner:relabel
 ---
-# Source: kube-prometheus-stack/templates/prometheus/rules-1.14/kube-apiserver-availability.rules.yaml
 apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
@@ -2297,7 +2252,6 @@ spec:
     - expr: sum by (cluster, code, verb) (increase(apiserver_request_total{job="apiserver",verb=~"LIST|GET|POST|PUT|PATCH|DELETE",code=~"5.."}[1h]))
       record: code_verb:apiserver_request_total:increase1h
 ---
-# Source: kube-prometheus-stack/templates/prometheus/rules-1.14/kube-apiserver-burnrate.rules.yaml
 apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
@@ -2619,7 +2573,6 @@ spec:
         verb: write
       record: apiserver_request:burnrate6h
 ---
-# Source: kube-prometheus-stack/templates/prometheus/rules-1.14/kube-apiserver-histogram.rules.yaml
 apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
@@ -2650,7 +2603,6 @@ spec:
         verb: write
       record: cluster_quantile:apiserver_request_slo_duration_seconds:histogram_quantile
 ---
-# Source: kube-prometheus-stack/templates/prometheus/rules-1.14/kube-apiserver-slos.yaml
 apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
@@ -2727,7 +2679,6 @@ spec:
         severity: warning
         short: 6h
 ---
-# Source: kube-prometheus-stack/templates/prometheus/rules-1.14/kube-prometheus-general.rules.yaml
 apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
@@ -2752,7 +2703,6 @@ spec:
     - expr: count without(instance, pod, node) (up == 0)
       record: count:up0
 ---
-# Source: kube-prometheus-stack/templates/prometheus/rules-1.14/kube-prometheus-node-recording.rules.yaml
 apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
@@ -2785,7 +2735,6 @@ spec:
     - expr: cluster:node_cpu:sum_rate5m / count(sum(node_cpu_seconds_total) BY (instance, cpu))
       record: cluster:node_cpu:ratio
 ---
-# Source: kube-prometheus-stack/templates/prometheus/rules-1.14/kube-scheduler.rules.yaml
 apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
@@ -2842,7 +2791,6 @@ spec:
         quantile: '0.5'
       record: cluster_quantile:scheduler_binding_duration_seconds:histogram_quantile
 ---
-# Source: kube-prometheus-stack/templates/prometheus/rules-1.14/kube-state-metrics.yaml
 apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
@@ -2911,7 +2859,6 @@ spec:
       labels:
         severity: critical
 ---
-# Source: kube-prometheus-stack/templates/prometheus/rules-1.14/kubelet.rules.yaml
 apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
@@ -2944,7 +2891,6 @@ spec:
         quantile: '0.5'
       record: node_quantile:kubelet_pleg_relist_duration_seconds:histogram_quantile
 ---
-# Source: kube-prometheus-stack/templates/prometheus/rules-1.14/kubernetes-apps.yaml
 apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
@@ -3192,7 +3138,6 @@ spec:
       labels:
         severity: warning
 ---
-# Source: kube-prometheus-stack/templates/prometheus/rules-1.14/kubernetes-resources.yaml
 apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
@@ -3315,7 +3260,6 @@ spec:
       labels:
         severity: info
 ---
-# Source: kube-prometheus-stack/templates/prometheus/rules-1.14/kubernetes-storage.yaml
 apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
@@ -3429,7 +3373,6 @@ spec:
       labels:
         severity: critical
 ---
-# Source: kube-prometheus-stack/templates/prometheus/rules-1.14/kubernetes-system-apiserver.yaml
 apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
@@ -3503,7 +3446,6 @@ spec:
       labels:
         severity: warning
 ---
-# Source: kube-prometheus-stack/templates/prometheus/rules-1.14/kubernetes-system-controller-manager.yaml
 apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
@@ -3533,7 +3475,6 @@ spec:
       labels:
         severity: critical
 ---
-# Source: kube-prometheus-stack/templates/prometheus/rules-1.14/kubernetes-system-kube-proxy.yaml
 apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
@@ -3563,7 +3504,6 @@ spec:
       labels:
         severity: critical
 ---
-# Source: kube-prometheus-stack/templates/prometheus/rules-1.14/kubernetes-system-kubelet.yaml
 apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
@@ -3704,7 +3644,6 @@ spec:
       labels:
         severity: critical
 ---
-# Source: kube-prometheus-stack/templates/prometheus/rules-1.14/kubernetes-system-scheduler.yaml
 apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
@@ -3734,7 +3673,6 @@ spec:
       labels:
         severity: critical
 ---
-# Source: kube-prometheus-stack/templates/prometheus/rules-1.14/kubernetes-system.yaml
 apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
@@ -3777,7 +3715,6 @@ spec:
       labels:
         severity: warning
 ---
-# Source: kube-prometheus-stack/templates/prometheus/rules-1.14/node-exporter.rules.yaml
 apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
@@ -3860,7 +3797,6 @@ spec:
         )
       record: instance:node_network_transmit_drop_excluding_lo:rate5m
 ---
-# Source: kube-prometheus-stack/templates/prometheus/rules-1.14/node-exporter.yaml
 apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
@@ -4108,7 +4044,6 @@ spec:
       labels:
         severity: critical
 ---
-# Source: kube-prometheus-stack/templates/prometheus/rules-1.14/node-network.yaml
 apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
@@ -4138,7 +4073,6 @@ spec:
       labels:
         severity: warning
 ---
-# Source: kube-prometheus-stack/templates/prometheus/rules-1.14/node.rules.yaml
 apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
@@ -4195,7 +4129,6 @@ spec:
         )
       record: cluster:node_cpu:ratio_rate5m
 ---
-# Source: kube-prometheus-stack/templates/prometheus/rules-1.14/prometheus-operator.yaml
 apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
@@ -4279,7 +4212,6 @@ spec:
       labels:
         severity: warning
 ---
-# Source: kube-prometheus-stack/templates/prometheus/rules-1.14/prometheus.yaml
 apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
@@ -4551,7 +4483,6 @@ spec:
       labels:
         severity: critical
 ---
-# Source: kube-prometheus-stack/charts/grafana/templates/servicemonitor.yaml
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
@@ -4579,7 +4510,6 @@ spec:
     matchNames:
       - monitoring
 ---
-# Source: kube-prometheus-stack/charts/kube-state-metrics/templates/servicemonitor.yaml
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
@@ -4604,7 +4534,6 @@ spec:
     - port: http
       honorLabels: true
 ---
-# Source: kube-prometheus-stack/charts/prometheus-node-exporter/templates/servicemonitor.yaml
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
@@ -4633,7 +4562,6 @@ spec:
     - port: http-metrics
       scheme: http
 ---
-# Source: kube-prometheus-stack/templates/alertmanager/servicemonitor.yaml
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
@@ -4664,7 +4592,6 @@ spec:
     enableHttp2: true
     path: "/metrics"
 ---
-# Source: kube-prometheus-stack/templates/exporters/core-dns/servicemonitor.yaml
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
@@ -4694,7 +4621,6 @@ spec:
   - port: http-metrics
     bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
 ---
-# Source: kube-prometheus-stack/templates/exporters/kube-api-server/servicemonitor.yaml
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
@@ -4735,7 +4661,6 @@ spec:
       component: apiserver
       provider: kubernetes
 ---
-# Source: kube-prometheus-stack/templates/exporters/kube-controller-manager/servicemonitor.yaml
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
@@ -4769,7 +4694,6 @@ spec:
       caFile: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
       insecureSkipVerify: true
 ---
-# Source: kube-prometheus-stack/templates/exporters/kube-etcd/servicemonitor.yaml
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
@@ -4799,7 +4723,6 @@ spec:
   - port: http-metrics
     bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
 ---
-# Source: kube-prometheus-stack/templates/exporters/kube-proxy/servicemonitor.yaml
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
@@ -4829,7 +4752,6 @@ spec:
   - port: http-metrics
     bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
 ---
-# Source: kube-prometheus-stack/templates/exporters/kube-scheduler/servicemonitor.yaml
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
@@ -4863,7 +4785,6 @@ spec:
       caFile: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
       insecureSkipVerify: true
 ---
-# Source: kube-prometheus-stack/templates/exporters/kubelet/servicemonitor.yaml
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
@@ -4954,7 +4875,6 @@ spec:
       app.kubernetes.io/name: kubelet
       k8s-app: kubelet
 ---
-# Source: kube-prometheus-stack/templates/prometheus-operator/servicemonitor.yaml
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
@@ -4991,7 +4911,6 @@ spec:
     matchNames:
       - "monitoring"
 ---
-# Source: kube-prometheus-stack/templates/prometheus/servicemonitor.yaml
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
@@ -5021,7 +4940,6 @@ spec:
   - port: http-web
     path: "/metrics"
 ---
-# Source: kube-prometheus-stack/templates/prometheus-operator/admission-webhooks/validatingWebhookConfiguration.yaml
 apiVersion: admissionregistration.k8s.io/v1
 kind: ValidatingWebhookConfiguration
 metadata:
@@ -5057,7 +4975,6 @@ webhooks:
     admissionReviewVersions: ["v1", "v1beta1"]
     sideEffects: None
 ---
-# Source: kube-prometheus-stack/charts/grafana/templates/tests/test-serviceaccount.yaml
 apiVersion: v1
 kind: ServiceAccount
 metadata:
@@ -5073,7 +4990,6 @@ metadata:
     "helm.sh/hook": test-success
     "helm.sh/hook-delete-policy": "before-hook-creation,hook-succeeded"
 ---
-# Source: kube-prometheus-stack/templates/prometheus-operator/admission-webhooks/job-patch/serviceaccount.yaml
 apiVersion: v1
 kind: ServiceAccount
 metadata:
@@ -5092,7 +5008,6 @@ metadata:
     release: "kube-prometheus-stack"
     heritage: "Helm"
 ---
-# Source: kube-prometheus-stack/charts/grafana/templates/tests/test-configmap.yaml
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -5116,7 +5031,6 @@ data:
       [ "$code" == "200" ]
     }
 ---
-# Source: kube-prometheus-stack/templates/prometheus-operator/admission-webhooks/job-patch/clusterrole.yaml
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
@@ -5143,7 +5057,6 @@ rules:
       - get
       - update
 ---
-# Source: kube-prometheus-stack/templates/prometheus-operator/admission-webhooks/job-patch/clusterrolebinding.yaml
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
@@ -5169,7 +5082,6 @@ subjects:
     name: kube-prometheus-stack-moni-admission
     namespace: monitoring
 ---
-# Source: kube-prometheus-stack/templates/prometheus-operator/admission-webhooks/job-patch/role.yaml
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
@@ -5196,7 +5108,6 @@ rules:
       - get
       - create
 ---
-# Source: kube-prometheus-stack/templates/prometheus-operator/admission-webhooks/job-patch/rolebinding.yaml
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
@@ -5223,7 +5134,6 @@ subjects:
     name: kube-prometheus-stack-moni-admission
     namespace: monitoring
 ---
-# Source: kube-prometheus-stack/charts/grafana/templates/tests/test.yaml
 apiVersion: v1
 kind: Pod
 metadata:
@@ -5255,7 +5165,6 @@ spec:
         name: kube-prometheus-stack-grafana-test
   restartPolicy: Never
 ---
-# Source: kube-prometheus-stack/templates/prometheus-operator/admission-webhooks/job-patch/job-createSecret.yaml
 apiVersion: batch/v1
 kind: Job
 metadata:
@@ -5314,7 +5223,6 @@ spec:
         seccompProfile:
           type: RuntimeDefault
 ---
-# Source: kube-prometheus-stack/templates/prometheus-operator/admission-webhooks/job-patch/job-patchWebhook.yaml
 apiVersion: batch/v1
 kind: Job
 metadata:

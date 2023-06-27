@@ -1,8 +1,3 @@
----
-# Source: community-operator/templates/mongodbcommunity_cr_with_tls.yaml
-# mongodb resources
----
-# Source: community-operator/templates/mongodbcommunity_cr_with_tls.yaml
 apiVersion: mongodbcommunity.mongodb.com/v1
 kind: MongoDBCommunity
 metadata:
@@ -34,4 +29,3 @@ spec:
       scramCredentialsSecretName: my-scram
   additionalMongodConfig:
     storage.wiredTiger.engineConfig.journalCompressor: zlib
-
