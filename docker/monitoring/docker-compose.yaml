@@ -1,12 +1,12 @@
 version: "3.6"
 networks:
-  rabbitmq-prometheus:
+  monitoring:
     external: true
   traefik_default:
     external: true
 volumes:
-  rabbitmq-prometheus_prometheus:
-  rabbitmq-prometheus_grafana:
+  monitoring_prometheus:
+  monitoring_grafana:
 services:
   grafana:
     container_name: grafana
@@ -15,41 +15,56 @@ services:
     # ports:
     #   - "3000:3000"
     networks:
-      - "rabbitmq-prometheus"
+      - "monitoring"
       - "traefik_default"
     volumes:
-      - rabbitmq-prometheus_grafana:/var/lib/grafana
-      - /home/hoangndst/stuffops/monitoring/grafana/dashboards.yml:/etc/grafana/provisioning/dashboards/rabbitmq.yaml
-      - /home/hoangndst/stuffops/monitoring/grafana/datasources.yml:/etc/grafana/provisioning/datasources/prometheus.yaml
-      - /home/hoangndst/stuffops/monitoring/grafana/dashboards:/dashboards
+      - monitoring_grafana:/var/lib/grafana
+      - ./config/grafana/dashboards.yml:/etc/grafana/provisioning/dashboards/rabbitmq.yaml
+      - ./config/grafana/datasources.yml:/etc/grafana/provisioning/datasources/prometheus.yaml
+      - ./config/grafana/dashboards:/dashboards
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.monitor.entrypoints=websecure"
-      - "traefik.http.routers.monitor.rule=Host(`grafana.hoangndst.freeddns.org`)"
+      - "traefik.http.routers.monitor.rule=Host(`grafana.hoangnd.freeddns.org`)"
       - "traefik.http.routers.monitor.service=grafana"
       - "traefik.http.services.grafana.loadbalancer.server.port=3000"
       - "traefik.docker.network=traefik_default"
       - "traefik.http.routers.monitor.tls=true"
-      - "traefik.http.routers.monitor.tls.certresolver=production"
     environment:
-      # https://grafana.com/plugins/flant-statusmap-panel
-      # https://grafana.com/plugins/grafana-piechart-panel
-      # https://grafana.com/plugins/grafana-polystat-panel
-      # https://grafana.com/plugins/jdbranham-diagram-panel
-      # https://grafana.com/plugins/michaeldmoore-multistat-panel
-      # https://grafana.com/plugins/vonage-status-panel
-      # https://grafana.com/plugins/yesoreyeram-boomtable-panel
       GF_INSTALL_PLUGINS: "flant-statusmap-panel,grafana-piechart-panel"
+  
   prometheus:
-    # https://hub.docker.com/r/prom/prometheus/tags
-    image: prom/prometheus:v2.30.3
+    image: prom/prometheus:latest
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+      - "--storage.tsdb.path=/prometheus"
+      - "--storage.tsdb.min-block-duration=2h"
+      - "--storage.tsdb.max-block-duration=2h"
+      - "--web.console.libraries=/etc/prometheus/console_libraries"
+      - "--web.console.templates=/etc/prometheus/consoles"
+      - "--web.enable-lifecycle"
+      - "--web.enable-admin-api"
     networks:
-      - "rabbitmq-prometheus"
+      - "monitoring"
     ports:
       - "9090:9090"
     volumes:
-      - rabbitmq-prometheus_prometheus:/prometheus
-      - /home/hoangndst/stuffops/monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+      - monitoring_prometheus:/prometheus
+      - ./config/prometheus:/etc/prometheus
+  
+  alertmanager:
+    image: prom/alertmanager:latest
+    container_name: 'alertmanager'
+    command:
+      - '--config.file=/etc/alertmanager/config.yaml'
+    networks:
+      - "monitoring"
+    volumes:
+      - ./config/alertmanager:/etc/alertmanager
+    restart: unless-stopped
+    ports:
+      - 9093:9093
+
   node-exporter:
     command:
       - '--path.procfs=/host/proc'
@@ -58,10 +73,9 @@ services:
       - '--collector.filesystem.ignored-mount-points=^/(sys|proc|dev|host|etc)($$|/)'
     expose:
       - 9100
-    # https://hub.docker.com/r/prom/node-exporter/tags
-    image: prom/node-exporter:v1.2.0
+    image: prom/node-exporter:latest
     networks:
-      - "rabbitmq-prometheus"
+      - "monitoring"
     volumes:
       - /proc:/host/proc:ro
       - /sys:/host/sys:ro
@@ -69,13 +83,11 @@ services:
   cadvisor:
     expose:
       - 8080
-    # https://hub.docker.com/r/google/cadvisor/tags
     image: gcr.io/cadvisor/cadvisor:v0.47.0
     networks:
-      - "rabbitmq-prometheus"
+      - "monitoring"
     volumes:
       - /:/rootfs:ro
       - /var/run:/var/run:rw
       - /sys:/sys:ro
       - /var/lib/docker/:/var/lib/docker:ro
-      #- /cgroup:/cgroup:ro #doesn't work on MacOS only for Linux
