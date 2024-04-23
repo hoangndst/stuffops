@@ -15,7 +15,7 @@ receivers:
     smarthost: 'smtp.gmail.com:587'
     auth_username: 'hoangndst@gmail.com'
     auth_identity: 'hoangndst@gmail.com'
-    auth_password: 'techsstudio'
+    auth_password: 'ahahahahahahaaa'
     send_resolved: true
     headers:
       Subject: '[AlertManager] Cảnh báo mới'
