@@ -1,6 +1,5 @@
 global:
   scrape_interval: 15s # Default is every 1 minute.
-  username: hoangnd
 
 alerting:
   alertmanagers:

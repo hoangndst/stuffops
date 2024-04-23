@@ -1,4 +1,4 @@
-version: "3.6"
+version: "3.8"
 networks:
   monitoring:
     external: true
@@ -35,6 +35,8 @@ services:
   
   prometheus:
     image: prom/prometheus:latest
+    container_name: prometheus
+    hostname: prometheus
     command:
       - "--config.file=/etc/prometheus/prometheus.yml"
       - "--storage.tsdb.path=/prometheus"
@@ -55,6 +57,7 @@ services:
   alertmanager:
     image: prom/alertmanager:latest
     container_name: 'alertmanager'
+    hostname: 'alertmanager'
     command:
       - '--config.file=/etc/alertmanager/config.yaml'
     networks:
@@ -66,6 +69,8 @@ services:
       - 9093:9093
 
   node-exporter:
+    container_name: node-exporter
+    hostname: node-exporter
     command:
       - '--path.procfs=/host/proc'
       - '--path.rootfs=/rootfs'
@@ -81,13 +86,19 @@ services:
       - /sys:/host/sys:ro
       - /:/rootfs:ro
   cadvisor:
+    container_name: cadvisor
+    hostname: cadvisor
+    privileged: true
+    # device: 
+    # - /dev/kmsg
     expose:
       - 8080
-    image: gcr.io/cadvisor/cadvisor:v0.47.0
+    image: gcr.io/cadvisor/cadvisor:v0.49.1
     networks:
       - "monitoring"
     volumes:
       - /:/rootfs:ro
-      - /var/run:/var/run:rw
+      - /var/run:/var/run:ro
       - /sys:/sys:ro
       - /var/lib/docker/:/var/lib/docker:ro
+      - /dev/disk/:/dev/disk:ro
