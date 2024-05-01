@@ -5,7 +5,7 @@ templates:
 - '/etc/alertmanager/templates/*.tmpl'
 
 route:
-  receiver: 'gmail'
+  receiver: 'telegram'
 
 receivers:
 - name: 'gmail'
@@ -15,10 +15,17 @@ receivers:
     smarthost: 'smtp.gmail.com:587'
     auth_username: 'hoangndst@gmail.com'
     auth_identity: 'hoangndst@gmail.com'
-    auth_password: 'ahahahahahahaaa'
+    auth_password: 'password'
     send_resolved: true
     headers:
       Subject: '[AlertManager] Cảnh báo mới'
       From: 'AlertManager <alertmanager@example.com>'
       To: 'Người nhận hoangndst@gmail.com'
     html: '{{ template "email.viettel.html" . }}'
+- name: 'telegram'
+  telegram_configs:
+  - api_url: 'https://api.telegram.org'
+    chat_id: 1553474524
+    bot_token: 'token'
+    send_resolved: true
+    message: '{{ template "telegram.viettel.html" . }}'

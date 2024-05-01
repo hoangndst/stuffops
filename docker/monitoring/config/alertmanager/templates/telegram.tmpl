@@ -1,0 +1,19 @@
+{{ define "telegram.viettel.html" }}
+<b>🔥 [AlertManager] Cảnh báo mới</b>
+<b>Số lượng cảnh báo: </b>{{ .Alerts | len }}
+Xin chào @hoangndst, chúng tôi xin thông báo rằng đã xảy ra một cảnh báo mới trong hệ thống.
+Dưới đây là thông tin chi tiết:
+{{ range.Alerts }}
+🪪 {{ .Labels.alertname }}
+<b>Mức độ: </b>{{ .Labels.severity }}
+<b>Tên máy chủ: </b>{{ .Labels.instance }}
+<b>Thông điệp: </b>{{ .Annotations.summary }}
+<b>Giá trị hiện tại: </b>{{ .Annotations.value }}
+<b>Thời gian bắt đầu: </b>{{ .StartsAt.Format "2006-01-02 15:04:05" }}
+<b>Mô tả chi tiết: </b>{{ .Annotations.description }}
+{{ end }}
+👨‍💻 Chúng tôi đang theo dõi tình trạng này và sẽ tiếp tục giám sát các sự kiện liên quan. Vui lòng kiểm tra và xử lý cảnh báo này càng sớm càng tốt.
+Xin cảm ơn!
+<b>Công cụ giám sát:</b>
+🛠 <a href="https://grafana.hoangnd.freeddns.org">Grafana</a> 💊 <a href="https://alertmanager.hoangnd.freeddns.org">Alertmanager</a> 💊 <a href="https://prometheus.hoangnd.freeddns.org">Prometheus</a> 🛠
+{{ end }}

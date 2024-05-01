@@ -1,0 +1,19 @@
+version: '3'
+networks:
+  traefik_default:
+    external: true
+services:
+  mishy:
+    container_name: mishy
+    image: 'hoangndst/mishy:v0.0.2'
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.mishy.entrypoints=websecure"
+      - "traefik.http.routers.mishy.rule=Host(`mishy.hoangnd.freeddns.org`)"
+      - "traefik.http.routers.mishy.service=mishy"
+      - "traefik.http.services.mishy.loadbalancer.server.port=80"
+      - "traefik.docker.network=traefik_default"
+      - "traefik.http.routers.mishy.tls=true"
+    networks:
+      - traefik_default

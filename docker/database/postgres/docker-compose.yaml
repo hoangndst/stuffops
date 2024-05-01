@@ -1,0 +1,48 @@
+version: "3.9"
+
+volumes:
+  postgresql_data:
+    external: true
+  pgadmin_data:
+    external: true
+networks:
+  traefik_default:
+    external: true
+services:
+  postgres:
+    container_name: postgres
+    hostname: postgres
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: hoangnd
+      POSTGRES_PASSWORD: Hoang2002*
+    volumes:
+      - postgresql_data:/var/lib/postgresql/data
+    networks:
+      - traefik_default
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.postgres.rule=Host(`postgres.hoangnd.freeddns.org`)"
+      - "traefik.http.routers.postgres.entrypoints=websecure"
+      - "traefik.http.routers.postgres.tls=true"
+      - "traefik.http.services.postgres.loadbalancer.server.port=5432"
+      - "traefik.docker.network=traefik_default"
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin
+    hostname: pgadmin
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.monitor.entrypoints=websecure"
+      - "traefik.http.routers.pgadmin.rule=Host(`pgadmin.hoangnd.freeddns.org`)"
+      - "traefik.http.routers.pgadmin.tls=true"
+      - "traefik.http.services.pgadmin.loadbalancer.server.port=80"
+      - "traefik.docker.network=traefik_default"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: hoangndst@gmail.com
+      PGADMIN_DEFAULT_PASSWORD: Hoang2002*
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+    networks:
+      - traefik_default
