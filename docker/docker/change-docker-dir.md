@@ -19,3 +19,6 @@ Khi sử dụng `ln -s`, nếu bạn không có quyền truy cập vào thư m�
 Khi sử dụng `mount --rbind`, bạn có thể đặt quyền truy cập cho thư mục gốc sao cho tất cả các thư mục con của nó có thể được truy cập bởi người dùng cần truy cập.
 
 Tóm lại, `ln -s` là một cách đơn giản để tạo liên kết tượng trưng giữa hai thư mục, trong khi `mount --rbind` có thể giải quyết vấn đề về phân cấp quyền hạn và gắn kết toàn bộ cây thư mục. Tuy nhiên, cách tiếp cận nào tốt
+
+https://mrkandreev.name/snippets/how_to_move_docker_data_to_another_location/
+https://www.ibm.com/docs/en/z-logdata-analytics/5.1.0?topic=software-relocating-docker-root-directory
