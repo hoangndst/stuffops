@@ -1,0 +1,24 @@
+networks:
+  traefik_cloudflare:
+    external: true
+services:
+  hoangndst-homepage:
+    container_name: hoangndst-homepage
+    image: 'hoangndst/homepage:v0.3.0-alpha.7'
+    restart: unless-stopped
+    environment:
+      - NODE_TLS_REJECT_UNAUTHORIZED=${NODE_TLS_REJECT_UNAUTHORIZED:-0}
+      - SPOTIFY_CLIENT_ID=${SPOTIFY_CLIENT_ID}
+      - SPOTIFY_CLIENT_SECRET=${SPOTIFY_CLIENT_SECRET}
+      - SPOTIFY_REFRESH_TOKEN=${SPOTIFY_REFRESH_TOKEN}
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.hoangndst-homepage.entrypoints=websecure"
+      - "traefik.http.routers.hoangndst-homepage.rule=Host(`hoangndst.com`)"
+      - "traefik.http.routers.hoangndst-homepage.service=hoangndst-homepage"
+      - "traefik.http.services.hoangndst-homepage.loadbalancer.server.port=3000"
+      - "traefik.docker.network=traefik_cloudflare"
+      - "traefik.http.routers.hoangndst-homepage.tls=true"
+      - "traefik.http.routers.hoangndst-homepage.tls.certresolver=hoangndst-prod"
+    networks:
+      - traefik_cloudflare

@@ -1,4 +1,8 @@
 config.yaml
 config.yaml
-
+config*
 data/
+
+env
+.env
+.env.*

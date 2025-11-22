@@ -1,0 +1,12 @@
+services:
+  azp-agent-linux:
+    container_name: azp-agent-linux
+    image: hoangndst/azp-agent-linux:v0.1.0
+    privileged: true
+    environment:
+      AZP_URL: ${AZP_URL:-"https://dev.azure.com/hoangndst"}
+      AZP_TOKEN: ${AZP_TOKEN}
+      AZP_POOL: ${AZP_POOL:-"mr4x2-pool"}
+      AZP_AGENT_NAME: ${AZP_AGENT_NAME:-"mr4x2 - Agent Linux"}
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock

@@ -1,0 +1,19 @@
+networks:
+  traefik_cloudflare:
+    external: true
+services:
+  chat-app:
+    container_name: chat-app
+    image: hoangndst/monitoring-chat:v0.1.0-alpha.0
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.chat-app.entrypoints=websecure"
+      - "traefik.http.routers.chat-app.rule=Host(`chat.hoangndst.com`)"
+      - "traefik.http.routers.chat-app.service=chat-app"
+      - "traefik.http.services.chat-app.loadbalancer.server.port=8080"
+      - "traefik.docker.network=traefik_cloudflare"
+      - "traefik.http.routers.chat-app.tls=true"
+      - "traefik.http.routers.chat-app.tls.certresolver=hoangndst-prod"
+    networks:
+      - traefik_cloudflare

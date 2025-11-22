@@ -1,0 +1,69 @@
+networks:
+  traefik_cloudflare:
+    external: true
+
+volumes:
+  listmonk_db:
+    external: true
+  listmonk_uploads:
+    external: true
+
+x-db-credentials: &db-credentials
+  POSTGRES_USER: &db-user listmonk
+  POSTGRES_PASSWORD: &db-password listmonk
+  POSTGRES_DB: &db-name listmonk
+
+services:
+  listmonk:
+    image: listmonk/listmonk:latest
+    container_name: listmonk_app
+    restart: unless-stopped
+    networks:
+      - traefik_cloudflare
+    hostname: listmonk.hoangndst.com
+    depends_on:
+      - db
+    command: [sh, -c, "./listmonk --install --idempotent --yes --config '' && ./listmonk --upgrade --yes --config '' && ./listmonk --config ''"]
+
+    environment:
+      LISTMONK_app__address: 0.0.0.0:9000
+      LISTMONK_db__user: *db-user
+      LISTMONK_db__password: *db-password
+      LISTMONK_db__database: *db-name
+      LISTMONK_db__host: listmonk_db
+      LISTMONK_db__port: 5432
+      LISTMONK_db__ssl_mode: disable
+      LISTMONK_db__max_open: 25
+      LISTMONK_db__max_idle: 25
+      LISTMONK_db__max_lifetime: 300s
+      TZ: Etc/UTC
+      LISTMONK_ADMIN_USER: ${LISTMONK_ADMIN_USER:-}
+      LISTMONK_ADMIN_PASSWORD: ${LISTMONK_ADMIN_PASSWORD:-}
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.listmonk.entrypoints=websecure"
+      - "traefik.http.routers.listmonk.rule=Host(`listmonk.hoangndst.com`)"
+      - "traefik.http.routers.listmonk.service=listmonk"
+      - "traefik.http.services.listmonk.loadbalancer.server.port=9000"
+      - "traefik.docker.network=traefik_cloudflare"
+      - "traefik.http.routers.listmonk.tls=true"
+      - "traefik.http.routers.listmonk.tls.certresolver=hoangndst-prod"
+    volumes:
+      - listmonk_uploads:/listmonk/uploads:rw
+
+  db:
+    image: postgres:17-alpine
+    hostname: listmonk_db
+    container_name: listmonk_db
+    restart: unless-stopped
+    networks:
+      - traefik_cloudflare
+    environment:
+      <<: *db-credentials
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U listmonk"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+    volumes:
+      - listmonk_db:/var/lib/postgresql/data

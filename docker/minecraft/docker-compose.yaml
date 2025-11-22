@@ -1,7 +1,10 @@
-version: "3.8"
-
+volumes:
+  mc_data:
+    external: true
 services:
   mc:
+    container_name: minecraft_server
+    hostname: minecraft_server
     image: itzg/minecraft-server
     tty: true
     stdin_open: true
@@ -10,7 +13,12 @@ services:
     environment:
       EULA: "TRUE"
       ONLINE_MODE: FALSE
-      # MOD_PLATFORM: "MODRINTH"
-      # MODRINTH_MODPACK: "cobblemon-fabric"
+      CF_API_KEY: ${CF_API_KEY}
+      TYPE: "AUTO_CURSEFORGE"
+      CF_PAGE_URL: "https://www.curseforge.com/minecraft/modpacks/all-the-mods-8/files/4962718"
+      CF_EXCLUDE_MODS: "486778"
+      VERSION: "1.19.2"
+      MEMORY: "4G"
+      MAX_MEMORY: "8G"
     volumes:
-      - ./data:/data
+      - mc_data:/data

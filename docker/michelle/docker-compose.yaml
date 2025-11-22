@@ -1,6 +1,5 @@
-version: '3'
 networks:
-  traefik_default:
+  traefik_cloudflare:
     external: true
 services:
   mishy:
@@ -10,10 +9,11 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.mishy.entrypoints=websecure"
-      - "traefik.http.routers.mishy.rule=Host(`mishy.hoangnd.freeddns.org`)"
+      - "traefik.http.routers.mishy.rule=Host(`mishy.hoangndst.com`)"
       - "traefik.http.routers.mishy.service=mishy"
       - "traefik.http.services.mishy.loadbalancer.server.port=80"
-      - "traefik.docker.network=traefik_default"
+      - "traefik.docker.network=traefik_cloudflare"
       - "traefik.http.routers.mishy.tls=true"
+      - "traefik.http.routers.mishy.tls.certresolver=hoangndst-prod"
     networks:
-      - traefik_default
+      - traefik_cloudflare

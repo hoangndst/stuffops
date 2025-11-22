@@ -1,0 +1,11 @@
+services:
+  ddclient-hoangndst.com:
+    image: linuxserver/ddclient:latest
+    container_name: ddclient-hoangndst.com
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Etc/UTC
+    volumes:
+      - ./config/ddclient.conf:/config/ddclient.conf
+    restart: unless-stopped
