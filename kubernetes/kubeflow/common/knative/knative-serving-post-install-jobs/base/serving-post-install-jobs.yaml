@@ -1,0 +1,50 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  generateName: storage-version-migration-serving-
+  namespace: knative-serving
+  labels:
+    app: storage-version-migration-serving
+    app.kubernetes.io/name: knative-serving
+    app.kubernetes.io/component: storage-version-migration-job
+    app.kubernetes.io/version: "1.21.1"
+  name: storage-version-migration-serving
+spec:
+  ttlSecondsAfterFinished: 600
+  backoffLimit: 10
+  template:
+    metadata:
+      labels:
+        app: storage-version-migration-serving
+        app.kubernetes.io/name: knative-serving
+        app.kubernetes.io/component: storage-version-migration-job
+        app.kubernetes.io/version: "1.21.1"
+        sidecar.istio.io/inject: "false"
+    spec:
+      serviceAccountName: controller
+      restartPolicy: OnFailure
+      containers:
+        - name: migrate
+          image: gcr.io/knative-releases/knative.dev/pkg/apiextensions/storageversion/cmd/migrate@sha256:6106427387f7f50f672218d0d68668cd20a571684cccb40da6f3cf6ae048ea1c
+          args:
+            - "services.serving.knative.dev"
+            - "configurations.serving.knative.dev"
+            - "revisions.serving.knative.dev"
+            - "routes.serving.knative.dev"
+            - "domainmappings.serving.knative.dev"
+          resources:
+            requests:
+              cpu: 100m
+              memory: 100Mi
+            limits:
+              cpu: 1000m
+              memory: 1000Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
+            capabilities:
+              drop:
+                - ALL
+            seccompProfile:
+              type: RuntimeDefault

@@ -1,0 +1,32 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+# Build on top of the default manager installation
+resources:
+  - ../manager # Installs in kubeflow-system namespace
+  - ../../third-party/leaderworkerset # Installs in kubeflow-system namespace
+  - ../../base/runtimes/data-cache # ClusterTrainingRuntime (cluster-scoped)
+  - cluster_role.yaml # ClusterRole (cluster-scoped)
+  - namespace-rbac # ServiceAccount and RoleBinding in default namespace
+
+# Add data cache image tags
+images:
+  - name: ghcr.io/kubeflow/trainer/dataset-initializer
+    newTag: v2.2.0
+
+# Patch namespace-rbac resources to install in default namespace
+patches:
+  - target:
+      kind: ServiceAccount
+      name: kubeflow-trainer-cache-initializer
+    patch: |-
+      - op: add
+        path: /metadata/namespace
+        value: default
+  - target:
+      kind: RoleBinding
+      name: kubeflow-trainer-cache-initializer
+    patch: |-
+      - op: add
+        path: /metadata/namespace
+        value: default

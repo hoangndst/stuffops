@@ -1,0 +1,14 @@
+#
+# Copyright © 2020 Arrikto Inc.  All Rights Reserved.
+#
+
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+- namespace.yaml
+- default-allow-same-namespace.yaml
+- allow-istiod-control-plane.yaml
+- allow-istiod-webhook-apiserver.yaml
+- allow-knative-to-istio-gateways.yaml
+namespace: istio-system

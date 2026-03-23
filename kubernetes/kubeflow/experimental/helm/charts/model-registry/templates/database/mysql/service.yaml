@@ -1,0 +1,16 @@
+{{- if .Values.database.mysql.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    component: db
+  name: {{ include "model-registry.mysql.serviceName" . }}
+spec:
+  ports:
+  - name: dbapi
+    port: {{ .Values.database.mysql.service.port }}
+    protocol: TCP
+  selector:
+    component: db
+  type: ClusterIP
+{{- end }} 

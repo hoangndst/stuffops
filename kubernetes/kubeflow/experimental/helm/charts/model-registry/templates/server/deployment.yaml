@@ -1,0 +1,137 @@
+{{- if .Values.server.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: model-registry-deployment
+  labels:
+    component: model-registry-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      component: model-registry-server
+  template:
+    metadata:
+      {{- if eq .Values.database.type "postgres" }}
+      annotations:
+        traffic.sidecar.istio.io/excludeOutboundPorts: {{ .Values.database.postgres.service.port | quote }}
+      {{- else if eq .Values.database.type "mysql" }}
+      annotations:
+        traffic.sidecar.istio.io/excludeOutboundPorts: {{ .Values.database.mysql.service.port | quote }}
+      {{- end }}
+      labels:
+        sidecar.istio.io/inject: "true"
+        component: model-registry-server
+    spec:
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
+        runAsNonRoot: true
+      containers:
+        - name: rest-container
+          {{- if eq .Values.database.type "postgres" }}
+          args:
+            - --hostname=0.0.0.0
+            - --port=$(MODEL_REGISTRY_REST_SERVICE_PORT)
+            - --datastore-type=embedmd
+            - --embedmd-database-type=postgres
+            - --embedmd-database-dsn=postgresql://$(POSTGRES_USER):$(POSTGRES_PASSWORD)@$(POSTGRES_HOST):$(POSTGRES_PORT)/$(POSTGRES_DB)?sslmode=disable
+          command:
+            - /model-registry
+            - proxy
+          env: []
+          envFrom:
+          - configMapRef:
+              name: model-registry-configmap
+          - secretRef:
+              name: model-registry-db-secrets
+          - configMapRef:
+              name: model-registry-db-parameters
+          {{- else if eq .Values.database.type "mysql" }}
+          args:
+            - --hostname=0.0.0.0
+            - --port=$(MODEL_REGISTRY_REST_SERVICE_PORT)
+            - --datastore-type=$(MODEL_REGISTRY_DATA_STORE_TYPE)
+            - --embedmd-database-dsn=$(MYSQL_USER_NAME):$(MYSQL_ROOT_PASSWORD)@tcp(model-registry-db:$(MYSQL_PORT))/$(MYSQL_DATABASE)?charset=utf8mb4
+          command:
+            - /model-registry
+            - proxy
+          env: []
+          envFrom:
+          - configMapRef:
+              name: model-registry-configmap
+          - secretRef:
+              name: model-registry-db-secrets
+          - configMapRef:
+              name: model-registry-db-parameters
+          {{- else }}
+          args:
+            - --hostname=0.0.0.0
+            - --port={{ .Values.server.rest.port }}
+            - --datastore-type={{ .Values.server.dataStoreType }}
+            - --embedmd-database-dsn=$(DBCONFIG_USER):$(DBCONFIG_PASSWORD)@tcp($(MYSQL_HOST):$(MYSQL_PORT))/$(MYSQL_DATABASE)?charset=utf8mb4
+          command:
+            - /model-registry
+            - proxy
+          env:
+          - name: DBCONFIG_USER
+            valueFrom:
+              secretKeyRef:
+                name: mysql-secret
+                key: username
+          - name: DBCONFIG_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: mysql-secret
+                key: password
+          - name: MYSQL_DATABASE
+            valueFrom:
+              configMapKeyRef:
+                name: pipeline-install-config
+                key: embedmdDb
+          - name: MYSQL_HOST
+            valueFrom:
+              configMapKeyRef:
+                name: pipeline-install-config
+                key: dbHost
+          - name: MYSQL_PORT
+            valueFrom:
+              configMapKeyRef:
+                name: pipeline-install-config
+                key: dbPort
+          {{- end }}
+          image: {{ .Values.global.imageRegistry }}/{{ .Values.server.image.repository }}:{{ .Values.server.image.tag | default .Values.global.imageTag }}
+          ports:
+            - name: http-api
+              containerPort: {{ .Values.server.rest.port }}
+          livenessProbe:
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            httpGet:
+              path: /readyz/isDirty
+              port: http-api
+            timeoutSeconds: 5
+            failureThreshold: 3
+          startupProbe:
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            httpGet:
+              path: /readyz/isDirty
+              port: http-api
+            timeoutSeconds: 5
+            failureThreshold: 6
+          readinessProbe:
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            httpGet:
+              path: /readyz/health
+              port: http-api
+            timeoutSeconds: 5
+            failureThreshold: 3
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+      serviceAccountName: model-registry-server
+{{- end }} 

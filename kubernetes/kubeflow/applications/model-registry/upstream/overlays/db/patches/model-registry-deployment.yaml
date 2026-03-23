@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: model-registry-deployment
+spec:
+  template:
+    metadata:
+      annotations:
+        # db doesn't use istio
+        traffic.sidecar.istio.io/excludeOutboundPorts: MYSQL_PORT_PLACEHOLDER
+    spec:
+      containers:
+        - name: rest-container
+          # Remove existing environment variables
+          env:
+            - $patch: replace
+          envFrom:
+            - configMapRef:
+                name: model-registry-configmap
+            - secretRef:
+                name: model-registry-db-secrets
+            - configMapRef:
+                name: model-registry-db-parameters
+          args:
+            - --hostname=0.0.0.0
+            - --port=$(MODEL_REGISTRY_REST_SERVICE_PORT)
+            - --datastore-type=$(MODEL_REGISTRY_DATA_STORE_TYPE)
+            - --embedmd-database-dsn=$(MYSQL_USER_NAME):$(MYSQL_ROOT_PASSWORD)@tcp(model-registry-db:$(MYSQL_PORT))/$(MYSQL_DATABASE)?charset=utf8mb4

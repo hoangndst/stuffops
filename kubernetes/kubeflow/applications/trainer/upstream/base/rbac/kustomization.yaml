@@ -1,0 +1,6 @@
+resources:
+  - role.yaml
+  - role_binding.yaml
+  - service_account.yaml
+  - public_configmap_role.yaml
+  - public_configmap_role_binding.yaml

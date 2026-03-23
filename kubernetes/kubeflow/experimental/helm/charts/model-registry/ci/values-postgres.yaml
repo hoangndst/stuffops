@@ -1,0 +1,89 @@
+# CI values for model-registry with PostgreSQL database
+# This matches the postgres overlay configuration
+
+global:
+  imageTag: latest
+  imagePullPolicy: IfNotPresent
+
+server:
+  enabled: true
+  replicas: 1
+  dataStoreType: embedmd
+  image:
+    tag: "v0.3.7"
+  resources:
+    limits:
+      cpu: 200m
+      memory: 256Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
+  grpc:
+    securityContext:
+      allowPrivilegeEscalation: false
+      capabilities:
+        drop:
+        - ALL
+      runAsUser: null
+      runAsGroup: null
+  rest:
+    readinessProbe:
+      initialDelaySeconds: 10
+      periodSeconds: 60
+
+database:
+  type: postgres
+  mysql:
+    enabled: false
+  postgres:
+    enabled: true
+    image:
+      repository: postgres
+      tag: "16-alpine"
+    auth:
+      database: metadb
+      username: root
+      password: "test"
+    service:
+      name: model-registry-db
+    resources:
+      limits:
+        cpu: 200m
+        memory: 256Mi
+      requests:
+        cpu: 100m
+        memory: 128Mi
+    persistence:
+      enabled: true  
+      size: 10Gi      
+  external:
+    enabled: false
+
+ui:
+  enabled: false
+
+controller:
+  enabled: false
+  rbac:
+    create: false
+
+istio:
+  enabled: false
+
+monitoring:
+  enabled: false
+
+security:
+  networkPolicy:
+    enabled: false
+  podSecurityPolicy:
+    enabled: false
+
+configMap:
+  data:
+    MODEL_REGISTRY_REST_SERVICE_HOST: "model-registry-service"
+    MODEL_REGISTRY_REST_SERVICE_PORT: "8080"
+    MODEL_REGISTRY_DATA_STORE_TYPE: "embedmd"
+
+rbac:
+  create: true 
