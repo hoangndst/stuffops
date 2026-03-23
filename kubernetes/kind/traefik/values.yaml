@@ -1,0 +1,72 @@
+service:
+  type: ClusterIP
+
+ports:
+  web:
+    port: 8000
+    expose: 
+      default: true 
+    nodePort: null
+
+  websecure:
+    port: 8443
+    expose: 
+      default: true  
+    nodePort: null
+
+api:
+  dashboard: true
+  insecure: false
+
+ingressRoute:
+  dashboard:
+    enabled: true
+    matchRule: Host(`traefik.hoangndst.com`)
+    entryPoints:
+      - websecure
+    middlewares:
+      - name: dashboard-auth
+
+# Creates a BasicAuth Middleware and Secret for the Dashboard Security
+extraObjects:
+  - apiVersion: v1
+    kind: Secret
+    metadata:
+      name: dashboard-auth-secret
+    type: kubernetes.io/basic-auth
+    stringData:
+      username: admin
+      password: "thisisatest123"      # Replace with an Actual Password
+  - apiVersion: traefik.io/v1alpha1
+    kind: Middleware
+    metadata:
+      name: dashboard-auth
+    spec:
+      basicAuth:
+        secret: dashboard-auth-secret
+
+# We will route with Gateway API instead.
+ingressClass:
+  enabled: false
+
+# Enable Gateway API Provider & Disables the KubernetesIngress provider
+# Providers tell Traefik where to find routing configuration.
+providers:
+  kubernetesIngress:
+     enabled: false
+  kubernetesGateway:
+     enabled: true
+
+gateway:
+  listeners:
+    web:           # HTTP listener that matches entryPoint `web`
+      port: 8000
+      protocol: HTTP
+      namespacePolicy:
+        from: All
+
+logs:
+  general:
+    level: INFO
+  access:
+    enabled: true
